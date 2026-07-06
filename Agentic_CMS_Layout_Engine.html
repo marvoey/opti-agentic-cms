@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic CMS Layout Previewer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        opti: {
+                            green: '#ABFF44',
+                            dark: '#08251A',
+                            blue: '#007879',
+                            light: '#91D8DA'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for the preview area */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .wireframe-block {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Insight drawer slide-in */
+        #insight-drawer { transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); transform: translateX(100%); }
+        #insight-drawer.open { transform: translateX(0); }
+        #insight-overlay { transition: opacity 0.3s ease; }
+
+        /* Slot annotation info markers injected via JS */
+        .slot-info {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 16px; height: 16px; margin-left: 6px; border-radius: 9999px;
+            background: #007879; color: #fff; font-size: 10px; font-weight: 700;
+            cursor: help; vertical-align: middle; position: relative; top: -1px;
+            animation: none; /* opt out of wireframe pulse */
+        }
+        .slot-info:hover { background: #08251A; }
+        #slot-tooltip {
+            position: fixed; z-index: 60; max-width: 300px; pointer-events: none;
+            background: #08251A; color: #fff; font-size: 12px; line-height: 1.5;
+            padding: 10px 12px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            opacity: 0; transition: opacity 0.15s ease; border: 1px solid #007879;
+        }
+        #slot-tooltip.show { opacity: 1; }
+        #slot-tooltip .st-label { color: #ABFF44; font-weight: 700; display: block; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.05em; font-size: 10px; }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col md:flex-row overflow-hidden font-sans text-gray-800">
+
+    <!-- Sidebar / Controls -->
+    <div class="w-full md:w-80 bg-opti-dark text-white flex flex-col shadow-xl z-10 flex-shrink-0 h-auto md:h-full">
+        <div class="p-6 border-b border-gray-700">
+            <h1 class="text-2xl font-black text-opti-green tracking-tight leading-tight uppercase">Agentic<br>Assembly</h1>
+            <p class="text-sm text-gray-400 mt-2">Select an underlying intent to see how the Agent selects a Layout blueprint.</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 space-y-2" id="nav-buttons">
+            <!-- Buttons injected via JS -->
+        </div>
+
+        <div class="p-6 bg-gray-900 border-t border-gray-700">
+            <div class="text-xs text-gray-500 uppercase font-bold tracking-wider mb-2">Simulated Prompt</div>
+            <div id="simulated-prompt" class="font-mono text-sm text-opti-light bg-gray-800 p-3 rounded border border-gray-700">
+                Waiting for input...
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Preview Area -->
+    <div class="flex-1 flex flex-col h-full bg-gray-200">
+        <!-- Topbar -->
+        <div class="h-16 bg-white border-b border-gray-300 flex items-center px-6 justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="bg-opti-green text-opti-dark px-2 py-1 rounded text-xs font-bold uppercase tracking-wider">Live Preview</span>
+                <span id="current-layout-name" class="font-semibold text-gray-700">Select an Intent</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="insight-toggle" class="hidden items-center gap-2 bg-opti-dark text-opti-green text-sm font-bold px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors">
+                    <span>💡</span><span>Why this layout?</span>
+                </button>
+                <div class="flex gap-2">
+                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="flex-1 overflow-y-auto p-4 md:p-8 flex justify-center items-start">
+            <div class="w-full max-w-5xl bg-white shadow-lg rounded-xl p-6 md:p-12 transition-all duration-300" id="preview-container">
+                
+                <!-- Initial Empty State -->
+                <div id="empty-state" class="min-h-[60vh] flex flex-col items-center justify-center text-gray-400 space-y-4">
+                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    <p class="text-lg font-medium">Select an Intent from the sidebar to assemble</p>
+                </div>
+
+                <!-- Wireframes (Hidden by default) -->
+                <div id="layouts-wrapper" class="hidden">
+                    
+                    <!-- 1. CONVERT -->
+                    <div id="layout-convert" class="hidden space-y-16">
+                        <!-- Hero Slot -->
+                        <div class="flex flex-col md:flex-row gap-10 items-center">
+                            <div class="w-full md:w-1/2 space-y-6">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 border-b pb-1">Hero Slot (50/50 Split)</div>
+                                <div class="h-12 bg-gray-800 rounded w-5/6"></div>
+                                <div class="h-12 bg-gray-800 rounded w-4/6"></div>
+                                <div class="space-y-3 pt-4">
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-11/12"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-4/5"></div>
+                                </div>
+                                <div class="pt-6">
+                                    <div class="h-14 bg-opti-blue rounded-lg w-48 shadow-lg"></div>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2 h-80 bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-gray-400 font-medium">
+                                Primary Media Block
+                            </div>
+                        </div>
+                        <!-- Social Proof Slot -->
+                        <div class="border-t border-gray-100 pt-10">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-6 text-center">Social Proof Slot</div>
+                            <div class="flex flex-wrap justify-center gap-8 md:gap-16">
+                                <div class="h-10 w-24 bg-gray-200 rounded"></div>
+                                <div class="h-10 w-24 bg-gray-200 rounded"></div>
+                                <div class="h-10 w-24 bg-gray-200 rounded"></div>
+                                <div class="h-10 w-24 bg-gray-200 rounded hidden md:block"></div>
+                            </div>
+                        </div>
+                        <!-- Reinforcement Slot -->
+                        <div class="bg-gray-50 rounded-2xl p-12 text-center space-y-6 border border-gray-100">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Reinforcement Slot</div>
+                            <div class="h-8 bg-gray-300 rounded w-2/3 mx-auto"></div>
+                            <div class="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
+                            <div class="h-4 bg-gray-200 rounded w-1/2 mx-auto"></div>
+                            <div class="pt-6">
+                                <div class="h-12 bg-opti-blue rounded-lg w-40 mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. EDUCATE -->
+                    <div id="layout-educate" class="hidden space-y-12">
+                        <!-- Context Hero Slot -->
+                        <div class="space-y-6 text-center max-w-4xl mx-auto">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 border-b pb-1 text-left">Context Hero Slot</div>
+                            <div class="h-6 w-32 bg-gray-200 rounded-full mx-auto"></div>
+                            <div class="h-14 bg-gray-800 rounded w-full"></div>
+                            <div class="h-14 bg-gray-800 rounded w-3/4 mx-auto"></div>
+                            <div class="flex justify-center gap-4 pt-4">
+                                <div class="h-4 w-20 bg-gray-200 rounded"></div>
+                                <div class="h-4 w-4 bg-gray-300 rounded-full"></div>
+                                <div class="h-4 w-24 bg-gray-200 rounded"></div>
+                            </div>
+                        </div>
+                        <div class="w-full h-96 bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl flex items-center justify-center text-gray-400 font-medium">Feature Image Block</div>
+                        
+                        <!-- Asymmetrical Slot -->
+                        <div class="flex flex-col md:flex-row gap-12">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 absolute -mt-6">Asymmetrical Content Slot (70/30)</div>
+                            <!-- 70% Prose -->
+                            <div class="w-full md:w-2/3 space-y-6">
+                                <div class="h-6 bg-gray-300 rounded w-1/2 mb-8"></div>
+                                <div class="space-y-3">
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-11/12"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                </div>
+                                <div class="h-40 bg-gray-100 border border-gray-200 rounded-xl my-8 flex items-center justify-center text-gray-400 text-sm">Inline Media Block</div>
+                                <div class="h-6 bg-gray-300 rounded w-1/3 mb-6"></div>
+                                <div class="space-y-3">
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-4/5"></div>
+                                </div>
+                            </div>
+                            <!-- 30% Sidebar -->
+                            <div class="w-full md:w-1/3">
+                                <div class="sticky top-8 space-y-6">
+                                    <div class="bg-gray-50 p-6 rounded-xl border border-gray-100 space-y-4">
+                                        <div class="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
+                                        <div class="h-3 bg-gray-200 rounded w-full"></div>
+                                        <div class="h-3 bg-gray-200 rounded w-5/6"></div>
+                                        <div class="h-3 bg-gray-200 rounded w-full"></div>
+                                        <div class="h-3 bg-gray-200 rounded w-4/5"></div>
+                                    </div>
+                                    <div class="bg-opti-light p-6 rounded-xl space-y-4">
+                                        <div class="h-6 bg-opti-dark rounded w-2/3"></div>
+                                        <div class="h-3 bg-white rounded w-full opacity-70"></div>
+                                        <div class="h-10 bg-opti-dark rounded mt-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. DISCOVER -->
+                    <div id="layout-discover" class="hidden space-y-8">
+                        <!-- Highlight Hero Slot -->
+                        <div class="relative w-full h-72 bg-gray-800 rounded-2xl overflow-hidden flex items-center p-12 text-white">
+                            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest absolute top-4 left-6">Highlight Hero Slot</div>
+                            <div class="w-full md:w-1/2 space-y-4 relative z-10">
+                                <div class="h-6 w-24 bg-opti-green rounded"></div>
+                                <div class="h-10 bg-white rounded w-full opacity-90"></div>
+                                <div class="h-4 bg-gray-400 rounded w-3/4"></div>
+                            </div>
+                            <div class="absolute right-0 top-0 bottom-0 w-1/2 bg-gray-700 transform skew-x-12 translate-x-16 opacity-50"></div>
+                        </div>
+                        
+                        <!-- Utility Slot -->
+                        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 flex flex-col md:flex-row gap-4 items-center relative">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest absolute -top-6 left-2">Utility Slot</div>
+                            <div class="flex-1 flex gap-2 w-full">
+                                <div class="h-12 bg-white border border-gray-300 rounded-lg flex-1"></div>
+                                <div class="h-12 w-12 bg-opti-dark rounded-lg"></div>
+                            </div>
+                            <div class="flex gap-2 w-full md:w-auto">
+                                <div class="h-10 w-24 bg-gray-200 rounded-full"></div>
+                                <div class="h-10 w-24 bg-gray-200 rounded-full"></div>
+                                <div class="h-10 w-24 bg-gray-200 rounded-full"></div>
+                            </div>
+                        </div>
+
+                        <!-- Matrix Slot -->
+                        <div class="pt-4 relative">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">The Matrix Slot (Cards)</div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <!-- Card 1 -->
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-40 bg-gray-200"></div>
+                                    <div class="p-5 space-y-3">
+                                        <div class="h-3 w-16 bg-opti-light rounded"></div>
+                                        <div class="h-6 bg-gray-800 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-2/3"></div>
+                                    </div>
+                                </div>
+                                <!-- Card 2 -->
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-40 bg-gray-200"></div>
+                                    <div class="p-5 space-y-3">
+                                        <div class="h-3 w-16 bg-opti-light rounded"></div>
+                                        <div class="h-6 bg-gray-800 rounded w-11/12"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                    </div>
+                                </div>
+                                <!-- Card 3 -->
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-40 bg-gray-200"></div>
+                                    <div class="p-5 space-y-3">
+                                        <div class="h-3 w-16 bg-opti-light rounded"></div>
+                                        <div class="h-6 bg-gray-800 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-4/5"></div>
+                                    </div>
+                                </div>
+                                <!-- Card 4 -->
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-40 bg-gray-200"></div>
+                                    <div class="p-5 space-y-3">
+                                        <div class="h-6 bg-gray-800 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    </div>
+                                </div>
+                                <!-- Card 5 -->
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-40 bg-gray-200"></div>
+                                    <div class="p-5 space-y-3">
+                                        <div class="h-6 bg-gray-800 rounded w-5/6"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    </div>
+                                </div>
+                                <!-- Card 6 -->
+                                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-40 bg-gray-200"></div>
+                                    <div class="p-5 space-y-3">
+                                        <div class="h-6 bg-gray-800 rounded w-full"></div>
+                                        <div class="h-4 bg-gray-200 rounded w-4/5"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. RESOLVE -->
+                    <div id="layout-resolve" class="hidden space-y-10 max-w-3xl mx-auto">
+                        <!-- Utility Hero Slot -->
+                        <div class="text-center space-y-6 bg-opti-dark text-white p-12 rounded-2xl relative">
+                            <div class="text-xs font-bold text-opti-green uppercase tracking-widest absolute top-4 left-6">Utility Hero Slot</div>
+                            <div class="h-10 bg-white rounded w-3/4 mx-auto opacity-90 mt-4"></div>
+                            <div class="relative max-w-xl mx-auto mt-8">
+                                <div class="h-14 bg-white rounded-xl w-full"></div>
+                                <div class="absolute right-2 top-2 h-10 w-24 bg-opti-blue rounded-lg"></div>
+                            </div>
+                            <div class="flex justify-center gap-4 pt-4">
+                                <div class="h-4 w-16 bg-gray-600 rounded"></div>
+                                <div class="h-4 w-20 bg-gray-600 rounded"></div>
+                                <div class="h-4 w-24 bg-gray-600 rounded"></div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Slot -->
+                        <div class="space-y-4 pt-6 relative">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Accordion / Step Slot</div>
+                            <div class="border border-gray-200 rounded-xl p-6 flex justify-between items-center bg-white shadow-sm">
+                                <div class="h-5 bg-gray-800 rounded w-2/3"></div>
+                                <div class="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <div class="h-3 w-0.5 bg-gray-400"></div>
+                                    <div class="h-0.5 w-3 bg-gray-400 absolute"></div>
+                                </div>
+                            </div>
+                            <div class="border-2 border-opti-light rounded-xl p-6 bg-white shadow-md relative overflow-hidden">
+                                <div class="absolute left-0 top-0 bottom-0 w-1 bg-opti-blue"></div>
+                                <div class="flex justify-between items-center mb-4">
+                                    <div class="h-5 bg-gray-800 rounded w-1/2"></div>
+                                    <div class="h-0.5 w-4 bg-gray-400"></div>
+                                </div>
+                                <div class="space-y-3 pt-2">
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-full"></div>
+                                    <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                                </div>
+                                <div class="mt-6 flex gap-3">
+                                    <div class="h-10 w-24 bg-gray-100 border border-gray-200 rounded text-xs flex items-center justify-center font-bold text-gray-400">HELPFUL</div>
+                                    <div class="h-10 w-32 bg-gray-100 border border-gray-200 rounded text-xs flex items-center justify-center font-bold text-gray-400">NOT HELPFUL</div>
+                                </div>
+                            </div>
+                            <div class="border border-gray-200 rounded-xl p-6 flex justify-between items-center bg-white shadow-sm">
+                                <div class="h-5 bg-gray-800 rounded w-3/4"></div>
+                                <div class="h-6 w-6 rounded-full bg-gray-100 flex items-center justify-center">
+                                    <div class="h-3 w-0.5 bg-gray-400"></div>
+                                    <div class="h-0.5 w-3 bg-gray-400 absolute"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Escalation Slot -->
+                        <div class="mt-12 bg-gray-50 border border-gray-200 rounded-2xl p-8 flex items-center gap-6 relative">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest absolute -top-3 left-4 bg-white px-2">Escalation Slot</div>
+                            <div class="h-16 w-16 bg-gray-200 rounded-full flex-shrink-0"></div>
+                            <div class="flex-1 space-y-2">
+                                <div class="h-5 bg-gray-800 rounded w-1/2"></div>
+                                <div class="h-4 bg-gray-400 rounded w-3/4"></div>
+                            </div>
+                            <div class="h-12 w-32 bg-gray-800 rounded-lg flex-shrink-0"></div>
+                        </div>
+                    </div>
+
+                    <!-- 5. EVALUATE -->
+                    <div id="layout-evaluate" class="hidden space-y-12">
+                        <!-- Context Slot -->
+                        <div class="text-center space-y-6 max-w-2xl mx-auto relative">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 border-b pb-1 text-left">Context Slot</div>
+                            <div class="h-12 bg-gray-800 rounded w-3/4 mx-auto"></div>
+                            <div class="h-4 bg-gray-400 rounded w-1/2 mx-auto"></div>
+                            <!-- Toggle -->
+                            <div class="flex justify-center items-center gap-4 pt-4">
+                                <div class="h-4 w-16 bg-gray-300 rounded"></div>
+                                <div class="w-14 h-8 bg-opti-green rounded-full relative shadow-inner">
+                                    <div class="w-6 h-6 bg-white rounded-full absolute left-1 top-1 shadow"></div>
+                                </div>
+                                <div class="h-4 w-16 bg-gray-300 rounded"></div>
+                            </div>
+                        </div>
+
+                        <!-- Comparison Grid -->
+                        <div class="relative pt-4">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Comparison Grid Slot</div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-0 border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+                                <!-- Tier 1 -->
+                                <div class="p-8 border-b md:border-b-0 md:border-r border-gray-200 bg-white">
+                                    <div class="h-6 w-24 bg-gray-300 rounded mb-4"></div>
+                                    <div class="h-12 w-32 bg-gray-800 rounded mb-2"></div>
+                                    <div class="h-4 w-full bg-gray-200 rounded mb-8"></div>
+                                    <div class="h-12 w-full bg-gray-100 border border-gray-200 rounded-lg mb-8"></div>
+                                    <div class="space-y-4">
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-light rounded-full"></div><div class="h-4 w-3/4 bg-gray-200 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-light rounded-full"></div><div class="h-4 w-2/3 bg-gray-200 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-light rounded-full"></div><div class="h-4 w-4/5 bg-gray-200 rounded"></div></div>
+                                    </div>
+                                </div>
+                                <!-- Tier 2 (Highlighted) -->
+                                <div class="p-8 bg-opti-dark text-white relative transform md:scale-105 shadow-xl md:rounded-lg z-10 border border-opti-dark">
+                                    <div class="absolute top-0 inset-x-0 h-1 bg-opti-green"></div>
+                                    <div class="absolute -top-3 inset-x-0 flex justify-center"><div class="bg-opti-green text-opti-dark text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Recommended</div></div>
+                                    <div class="h-6 w-24 bg-gray-600 rounded mb-4 mt-2"></div>
+                                    <div class="h-12 w-32 bg-white rounded mb-2"></div>
+                                    <div class="h-4 w-full bg-gray-500 rounded mb-8"></div>
+                                    <div class="h-12 w-full bg-opti-green rounded-lg mb-8"></div>
+                                    <div class="space-y-4">
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-green rounded-full"></div><div class="h-4 w-3/4 bg-gray-300 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-green rounded-full"></div><div class="h-4 w-4/5 bg-gray-300 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-green rounded-full"></div><div class="h-4 w-2/3 bg-gray-300 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-green rounded-full"></div><div class="h-4 w-full bg-gray-300 rounded"></div></div>
+                                    </div>
+                                </div>
+                                <!-- Tier 3 -->
+                                <div class="p-8 bg-white border-t md:border-t-0 md:border-l border-gray-200">
+                                    <div class="h-6 w-24 bg-gray-300 rounded mb-4"></div>
+                                    <div class="h-12 w-32 bg-gray-800 rounded mb-2"></div>
+                                    <div class="h-4 w-full bg-gray-200 rounded mb-8"></div>
+                                    <div class="h-12 w-full bg-gray-100 border border-gray-200 rounded-lg mb-8"></div>
+                                    <div class="space-y-4">
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-light rounded-full"></div><div class="h-4 w-full bg-gray-200 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-light rounded-full"></div><div class="h-4 w-4/5 bg-gray-200 rounded"></div></div>
+                                        <div class="flex gap-3"><div class="w-4 h-4 bg-opti-light rounded-full"></div><div class="h-4 w-3/4 bg-gray-200 rounded"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Checklist Slot -->
+                        <div class="relative pt-8">
+                            <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Feature Checklist Slot</div>
+                            <div class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                                <div class="grid grid-cols-4 bg-gray-50 border-b border-gray-200 p-4 font-bold text-sm text-gray-500">
+                                    <div class="col-span-1">Features</div>
+                                    <div class="text-center">Basic</div>
+                                    <div class="text-center text-opti-blue">Pro</div>
+                                    <div class="text-center">Enterprise</div>
+                                </div>
+                                <!-- Rows -->
+                                <div class="grid grid-cols-4 p-4 border-b border-gray-100 items-center">
+                                    <div class="h-4 w-32 bg-gray-300 rounded"></div>
+                                    <div class="flex justify-center"><div class="w-4 h-4 bg-gray-200 rounded-full"></div></div>
+                                    <div class="flex justify-center"><div class="w-4 h-4 bg-opti-blue rounded-full"></div></div>
+                                    <div class="flex justify-center"><div class="w-4 h-4 bg-gray-800 rounded-full"></div></div>
+                                </div>
+                                <div class="grid grid-cols-4 p-4 border-b border-gray-100 items-center">
+                                    <div class="h-4 w-40 bg-gray-300 rounded"></div>
+                                    <div class="flex justify-center"><div class="w-4 h-1 bg-gray-200 rounded"></div></div>
+                                    <div class="flex justify-center"><div class="w-4 h-4 bg-opti-blue rounded-full"></div></div>
+                                    <div class="flex justify-center"><div class="w-4 h-4 bg-gray-800 rounded-full"></div></div>
+                                </div>
+                                <div class="grid grid-cols-4 p-4 items-center">
+                                    <div class="h-4 w-24 bg-gray-300 rounded"></div>
+                                    <div class="flex justify-center"><div class="w-4 h-1 bg-gray-200 rounded"></div></div>
+                                    <div class="flex justify-center"><div class="w-4 h-1 bg-gray-200 rounded"></div></div>
+                                    <div class="flex justify-center"><div class="w-4 h-4 bg-gray-800 rounded-full"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. OPERATIONS -->
+                    <div id="layout-operations" class="hidden flex h-[700px] border border-gray-200 rounded-2xl overflow-hidden">
+                        <!-- Persistent Nav Slot (Sidebar) -->
+                        <div class="w-16 md:w-64 bg-opti-dark text-white flex flex-col p-4 relative">
+                            <div class="text-xs font-bold text-opti-green uppercase tracking-widest absolute top-2 left-2 md:left-4 z-10 whitespace-nowrap overflow-hidden hidden md:block">Nav Slot</div>
+                            <div class="h-8 w-8 md:w-32 bg-white opacity-20 rounded mb-12 mt-6"></div>
+                            <div class="space-y-6">
+                                <div class="flex items-center gap-3"><div class="h-6 w-6 bg-opti-light rounded"></div><div class="h-4 w-24 bg-gray-400 rounded hidden md:block"></div></div>
+                                <div class="flex items-center gap-3"><div class="h-6 w-6 bg-gray-600 rounded"></div><div class="h-4 w-20 bg-gray-600 rounded hidden md:block"></div></div>
+                                <div class="flex items-center gap-3"><div class="h-6 w-6 bg-gray-600 rounded"></div><div class="h-4 w-32 bg-gray-600 rounded hidden md:block"></div></div>
+                                <div class="flex items-center gap-3"><div class="h-6 w-6 bg-gray-600 rounded"></div><div class="h-4 w-16 bg-gray-600 rounded hidden md:block"></div></div>
+                            </div>
+                        </div>
+
+                        <!-- Main Dashboard Area -->
+                        <div class="flex-1 bg-gray-100 flex flex-col overflow-hidden relative">
+                            <!-- Summary Slot -->
+                            <div class="p-6 bg-white border-b border-gray-200">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Summary Slot (Quick Stats)</div>
+                                <div class="flex gap-4 overflow-x-auto">
+                                    <div class="min-w-[150px] flex-1 p-4 border border-gray-100 rounded-lg shadow-sm">
+                                        <div class="h-3 w-16 bg-gray-400 rounded mb-3"></div>
+                                        <div class="h-8 w-24 bg-gray-800 rounded mb-2"></div>
+                                        <div class="h-2 w-12 bg-green-400 rounded"></div>
+                                    </div>
+                                    <div class="min-w-[150px] flex-1 p-4 border border-gray-100 rounded-lg shadow-sm">
+                                        <div class="h-3 w-20 bg-gray-400 rounded mb-3"></div>
+                                        <div class="h-8 w-16 bg-gray-800 rounded mb-2"></div>
+                                        <div class="h-2 w-16 bg-red-400 rounded"></div>
+                                    </div>
+                                    <div class="min-w-[150px] flex-1 p-4 border border-gray-100 rounded-lg shadow-sm">
+                                        <div class="h-3 w-12 bg-gray-400 rounded mb-3"></div>
+                                        <div class="h-8 w-20 bg-gray-800 rounded mb-2"></div>
+                                        <div class="h-2 w-10 bg-green-400 rounded"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dashboard Widgets Slot -->
+                            <div class="p-6 flex-1 overflow-y-auto">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Modular Dashboard Slot</div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    <!-- Big Chart Widget -->
+                                    <div class="col-span-1 md:col-span-2 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-64 flex flex-col">
+                                        <div class="h-4 w-32 bg-gray-300 rounded mb-6"></div>
+                                        <div class="flex-1 border-b-2 border-l-2 border-gray-200 relative flex items-end p-2 gap-4">
+                                            <div class="w-1/6 bg-opti-light h-1/3 rounded-t"></div>
+                                            <div class="w-1/6 bg-opti-light h-1/2 rounded-t"></div>
+                                            <div class="w-1/6 bg-opti-blue h-full rounded-t"></div>
+                                            <div class="w-1/6 bg-opti-light h-2/3 rounded-t"></div>
+                                            <div class="w-1/6 bg-opti-light h-3/4 rounded-t"></div>
+                                        </div>
+                                    </div>
+                                    <!-- Alert List Widget -->
+                                    <div class="col-span-1 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-64 flex flex-col">
+                                        <div class="h-4 w-24 bg-gray-300 rounded mb-6"></div>
+                                        <div class="flex-1 space-y-4">
+                                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3"><div class="w-3 h-3 bg-red-400 rounded-full"></div><div class="h-3 bg-gray-600 rounded flex-1"></div></div>
+                                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3"><div class="w-3 h-3 bg-yellow-400 rounded-full"></div><div class="h-3 bg-gray-600 rounded flex-1"></div></div>
+                                            <div class="flex items-center gap-3 border-b border-gray-100 pb-3"><div class="w-3 h-3 bg-gray-300 rounded-full"></div><div class="h-3 bg-gray-600 rounded flex-1"></div></div>
+                                            <div class="flex items-center gap-3"><div class="w-3 h-3 bg-gray-300 rounded-full"></div><div class="h-3 bg-gray-600 rounded flex-1"></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Secondary Widget -->
+                                    <div class="col-span-1 md:col-span-3 bg-white p-5 rounded-xl border border-gray-200 shadow-sm h-48">
+                                        <div class="h-4 w-40 bg-gray-300 rounded mb-6"></div>
+                                        <div class="grid grid-cols-4 gap-4 h-24">
+                                            <div class="bg-gray-50 rounded border border-gray-100"></div>
+                                            <div class="bg-gray-50 rounded border border-gray-100"></div>
+                                            <div class="bg-gray-50 rounded border border-gray-100"></div>
+                                            <div class="bg-gray-50 rounded border border-gray-100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insight Overlay + Drawer -->
+    <div id="insight-overlay" class="fixed inset-0 bg-black/40 z-40 opacity-0 pointer-events-none"></div>
+    <div id="insight-drawer" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-white z-50 shadow-2xl flex flex-col">
+        <div class="p-6 bg-opti-dark text-white flex items-start justify-between flex-shrink-0">
+            <div>
+                <div class="text-xs uppercase tracking-widest text-opti-green font-bold mb-1">The Reasoning</div>
+                <h2 id="insight-layout-name" class="text-xl font-black leading-tight">Layout Blueprint</h2>
+            </div>
+            <button id="insight-close" class="text-gray-400 hover:text-white text-2xl leading-none px-2">&times;</button>
+        </div>
+        <div id="insight-body" class="flex-1 overflow-y-auto p-6 space-y-8 text-gray-700"></div>
+        <div class="p-4 bg-gray-50 border-t border-gray-200 text-xs text-gray-400 flex-shrink-0">
+            By hardcoding these rules, the Agent relies on proven HCI principles instead of guessing at design.
+        </div>
+    </div>
+
+    <!-- Floating slot tooltip -->
+    <div id="slot-tooltip"></div>
+
+    <script>
+        const intents = [
+            {
+                id: 'convert',
+                icon: '⚡',
+                name: 'Direct Action (Convert)',
+                desc: 'Funnel Layout: Removes distractions, forces a decision.',
+                prompt: 'Agent, assemble a landing page for our Q3 Win-Back campaign to drive subscriptions.',
+                layoutName: 'The Funnel Layout',
+                psychology: "Hick's Law",
+                principle: "The time it takes to make a decision increases with the number and complexity of choices.",
+                reasoning: "When the goal is conversion, the biggest enemy is distraction. Every element on the page is stripped down to funnel attention toward a single decision.",
+                slots: [
+                    { match: 'Hero Slot', note: 'The 50/50 split places the value proposition on the left (where Western readers look first) and product validation — image or video — on the right.' },
+                    { match: 'Social Proof', note: 'Immediately answers the user’s subconscious objection: "Can I trust you?" Placing logos or star ratings right above the fold validates the hero claim.' },
+                    { match: 'Reinforcement', note: 'Repeats the primary CTA after the trust signals land, capturing users who needed proof before committing. No global navigation means only two ways off the page: click the CTA, or close the tab.' }
+                ]
+            },
+            {
+                id: 'educate',
+                icon: '📖',
+                name: 'Deep Dive (Educate)',
+                desc: 'Editorial Layout: Prioritizes readability and authority.',
+                prompt: 'Agent, assemble an article explaining the new SEC compliance rules for our enterprise clients.',
+                layoutName: 'The Editorial Layout',
+                psychology: 'Cognitive Pacing & the F-Pattern',
+                principle: 'The eye scans long-form screens in an F-shaped pattern and fatigues quickly; the layout must artificially pace the reader.',
+                reasoning: 'Reading long-form content on a screen is physically fatiguing. The layout constrains line length and adds anchors so the reader never gets lost or overwhelmed.',
+                slots: [
+                    { match: 'Context Hero', note: 'Centers the title and metadata to establish authority and topic before the reader commits to the scroll.' },
+                    { match: 'Asymmetrical', note: 'Typography rules dictate a line of text should be 60–80 characters wide. The 70% column constrains prose to the perfect reading width so the eye never gets lost returning to the next line.' }
+                ]
+            },
+            {
+                id: 'discover',
+                icon: '🧭',
+                name: 'Crossroads (Discover)',
+                desc: 'Hub Layout: Handles high-volume structured data cleanly.',
+                prompt: 'Agent, assemble a resource hub for all our Spring 2024 product release notes and videos.',
+                layoutName: 'The Hub Layout',
+                psychology: 'Information Foraging Theory',
+                principle: 'Users hunt for information the same way animals hunt for food — they follow "scent" trails toward the strongest cues.',
+                reasoning: 'Users arriving here don’t have a specific target; they are browsing. The layout maximizes scannable "scent" and hands control to the user to narrow the field.',
+                slots: [
+                    { match: 'Highlight Hero', note: 'Surfaces one editorially-chosen item as the strongest scent trail to pull browsing users in.' },
+                    { match: 'Utility Slot', note: 'Placed immediately below the hero, this offers search and filters — giving control to the user to narrow the field if they feel overwhelmed.' },
+                    { match: 'Matrix Slot', note: 'Relies on Pattern Recognition. Forcing every item into an identical card (Image + Title + Category + Link) means the brain stops parsing layout and only reads the differences between cards — letting a user scan dozens of items in seconds.' }
+                ]
+            },
+            {
+                id: 'resolve',
+                icon: '🔧',
+                name: 'Resolution (Support)',
+                desc: 'Diagnostic Layout: Gets users to an answer or human fast.',
+                prompt: 'Agent, assemble a troubleshooting flow for customers experiencing login issues.',
+                layoutName: 'The Diagnostic Layout',
+                psychology: 'High-Anxiety Utilitarianism & Progressive Disclosure',
+                principle: 'A frustrated user has no patience for decoration; complexity must stay hidden until they explicitly ask for it.',
+                reasoning: 'A user looking for support is usually frustrated. Marketing fluff, complex graphics, and animations will only make them angrier, so the layout leads with the solution engine.',
+                slots: [
+                    { match: 'Utility Hero', note: 'A massive search bar. The solution engine goes front and center, bypassing any promotional copy.' },
+                    { match: 'Accordion', note: 'Uses Progressive Disclosure. A wall of 50 troubleshooting steps triggers cognitive overload and a bounce; accordions hide the complexity until the user explicitly clicks to reveal it.' },
+                    { match: 'Escalation', note: 'A highly visible "Contact Human" block. Psychologically, knowing an escape hatch exists makes users more willing to try the automated troubleshooting first.' }
+                ]
+            },
+            {
+                id: 'evaluate',
+                icon: '⚖️',
+                name: 'Evaluation (Compare)',
+                desc: 'Matrix Layout: Dense data comparison with clear recommendations.',
+                prompt: 'Agent, assemble a pricing page comparing our Basic, Pro, and Enterprise tiers.',
+                layoutName: 'The Matrix Layout',
+                psychology: 'Choice Architecture & the Anchoring Effect',
+                principle: 'The brain is poor at holding complex data points in short-term memory; it needs side-by-side juxtaposition to weigh trade-offs.',
+                reasoning: 'Users must compare options without losing track. The layout juxtaposes tiers and gently anchors attention toward the highest-value choice.',
+                slots: [
+                    { match: 'Context Slot', note: 'Frames the decision and offers a billing toggle so users self-select their frame of reference before comparing.' },
+                    { match: 'Comparison Grid', note: 'Places options vertically side-by-side and leverages the Center Stage Effect — slightly enlarging the recommended tier to subconsciously guide the user toward the highest-value option.' },
+                    { match: 'Feature Checklist', note: 'Uses sticky column headers. As the user scrolls through dozens of feature checkmarks, they never have to guess which column belongs to which tier — preventing memory strain.' }
+                ]
+            },
+            {
+                id: 'operations',
+                icon: '🎛️',
+                name: 'Operations (Manage)',
+                desc: 'Control Room Layout: Modular dashboard for logged-in users.',
+                prompt: 'Agent, assemble a dashboard for hospital admins to monitor daily patient intake and alerts.',
+                layoutName: 'The Control Room Layout',
+                psychology: 'Situational Awareness & Spatial Memory',
+                principle: 'Logged-in users treat these pages like software tools and rely on muscle memory; elements must stay in fixed, predictable positions.',
+                reasoning: 'Admins and power users perform repetitive tasks and rely on spatial memory. The layout gives permanent anchors and respects how the eye falls across a control panel.',
+                slots: [
+                    { match: 'Nav Slot', note: 'The sidebar never moves. This gives the user a permanent anchor point, ensuring they never feel "lost" inside the application.' },
+                    { match: 'Summary Slot', note: 'Provides an instant "pulse check" (total revenue, unread alerts) so the user doesn’t have to dig for the most critical metrics.' },
+                    { match: 'Modular Dashboard', note: 'Uses masonry / distinct bounding boxes. Critical alerts go top-left and historical data bottom-right, respecting how the eye naturally falls across a control panel.' }
+                ]
+            }
+        ];
+
+        const navContainer = document.getElementById('nav-buttons');
+        const layoutsWrapper = document.getElementById('layouts-wrapper');
+        const emptyState = document.getElementById('empty-state');
+        const promptEl = document.getElementById('simulated-prompt');
+        const currentLayoutName = document.getElementById('current-layout-name');
+
+        // Insight panel + tooltip elements
+        const insightToggle = document.getElementById('insight-toggle');
+        const insightDrawer = document.getElementById('insight-drawer');
+        const insightOverlay = document.getElementById('insight-overlay');
+        const insightClose = document.getElementById('insight-close');
+        const insightBody = document.getElementById('insight-body');
+        const insightLayoutName = document.getElementById('insight-layout-name');
+        const slotTooltip = document.getElementById('slot-tooltip');
+
+        let activeId = null;
+        let activeIntent = null;
+
+        // Initialize Navigation
+        intents.forEach(intent => {
+            const btn = document.createElement('button');
+            btn.className = `w-full text-left p-4 rounded-xl transition-all border-2 border-transparent group hover:bg-gray-800`;
+            btn.innerHTML = `
+                <div class="flex items-center gap-3 mb-1">
+                    <span class="text-xl">${intent.icon}</span>
+                    <span class="font-bold text-white tracking-wide">${intent.name}</span>
+                </div>
+                <div class="text-xs text-gray-400 pl-8 leading-snug group-hover:text-gray-300 transition-colors">${intent.desc}</div>
+            `;
+            
+            btn.onclick = () => selectIntent(intent);
+            intent.btn = btn; // Store reference
+            navContainer.appendChild(btn);
+        });
+
+        function selectIntent(selected) {
+            activeId = selected.id;
+            activeIntent = selected;
+
+            // Update Active Button UI
+            intents.forEach(intent => {
+                if(intent.id === selected.id) {
+                    intent.btn.classList.add('bg-gray-800', 'border-opti-green');
+                    intent.btn.classList.remove('border-transparent');
+                } else {
+                    intent.btn.classList.remove('bg-gray-800', 'border-opti-green');
+                    intent.btn.classList.add('border-transparent');
+                }
+            });
+
+            // Hide empty state, show wrapper
+            emptyState.classList.add('hidden');
+            layoutsWrapper.classList.remove('hidden');
+
+            // Hide all layouts
+            intents.forEach(intent => {
+                const layoutEl = document.getElementById(`layout-${intent.id}`);
+                if(layoutEl) {
+                    layoutEl.classList.add('hidden');
+                    // Remove animation class so it resets
+                    layoutEl.querySelectorAll('div').forEach(el => el.classList.remove('wireframe-block'));
+                }
+            });
+
+            // Show selected layout
+            const activeLayout = document.getElementById(`layout-${selected.id}`);
+            if(activeLayout) {
+                activeLayout.classList.remove('hidden');
+                
+                // Add a subtle build animation effect to simulate "assembly"
+                const blocks = activeLayout.children;
+                Array.from(blocks).forEach((block, index) => {
+                    block.style.opacity = '0';
+                    block.style.transform = 'translateY(10px)';
+                    block.style.transition = 'all 0.4s ease-out';
+                    
+                    setTimeout(() => {
+                        block.style.opacity = '1';
+                        block.style.transform = 'translateY(0)';
+                        block.classList.add('wireframe-block'); // Add the gentle pulse
+                    }, index * 150); // Staggered entrance
+                });
+
+                // Annotate each slot label with an interactive rationale marker
+                annotateSlots(activeLayout, selected);
+            }
+
+            // Update Metadata UI
+            typeWriterEffect(promptEl, `> ${selected.prompt}`);
+            currentLayoutName.innerText = `Blueprint: ${selected.layoutName}`;
+
+            // Reveal + populate the insight panel for this intent
+            insightToggle.classList.remove('hidden');
+            insightToggle.classList.add('flex');
+            renderInsight(selected);
+        }
+
+        // Attach a hoverable ⓘ marker to every slot label, mapped to its reasoning
+        function annotateSlots(layoutEl, intent) {
+            const labels = layoutEl.querySelectorAll('.tracking-widest');
+            labels.forEach(label => {
+                if (label.querySelector('.slot-info')) return; // already annotated
+                const text = label.textContent.trim();
+                const slot = (intent.slots || []).find(s => text.toLowerCase().includes(s.match.toLowerCase()));
+                if (!slot) return;
+                const marker = document.createElement('span');
+                marker.className = 'slot-info';
+                marker.textContent = 'i';
+                marker.dataset.label = text.replace(/\s*\(.*\)\s*/, '');
+                marker.dataset.note = slot.note;
+                label.appendChild(marker);
+            });
+        }
+
+        // Floating tooltip driven by the injected markers (delegated)
+        document.addEventListener('mouseover', (e) => {
+            const marker = e.target.closest('.slot-info');
+            if (!marker) return;
+            slotTooltip.innerHTML = `<span class="st-label">${marker.dataset.label}</span>${marker.dataset.note}`;
+            slotTooltip.classList.add('show');
+            positionTooltip(marker);
+        });
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('.slot-info')) slotTooltip.classList.remove('show');
+        });
+        function positionTooltip(marker) {
+            const r = marker.getBoundingClientRect();
+            // Show first so we can measure, then clamp within the viewport
+            let top = r.bottom + 8;
+            slotTooltip.style.top = top + 'px';
+            slotTooltip.style.left = '0px';
+            const tw = slotTooltip.offsetWidth;
+            let left = r.left + r.width / 2 - tw / 2;
+            left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+            if (top + slotTooltip.offsetHeight > window.innerHeight - 8) top = r.top - slotTooltip.offsetHeight - 8;
+            slotTooltip.style.top = top + 'px';
+            slotTooltip.style.left = left + 'px';
+        }
+
+        // Build the "Why this layout?" drawer content for an intent
+        function renderInsight(intent) {
+            insightLayoutName.innerText = intent.layoutName;
+            const slotsHtml = (intent.slots || []).map(s => `
+                <li class="border-l-2 border-opti-light pl-4 py-1">
+                    <div class="font-bold text-gray-800 text-sm">${s.match}</div>
+                    <div class="text-sm text-gray-600 mt-1 leading-relaxed">${s.note}</div>
+                </li>`).join('');
+            insightBody.innerHTML = `
+                <div>
+                    <div class="text-xs uppercase tracking-widest text-opti-blue font-bold mb-2">The Psychology</div>
+                    <div class="bg-opti-light/40 border border-opti-light rounded-xl p-4">
+                        <div class="font-black text-lg text-opti-dark">${intent.psychology}</div>
+                        <div class="text-sm text-gray-600 mt-1 italic leading-relaxed">${intent.principle}</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="text-xs uppercase tracking-widest text-opti-blue font-bold mb-2">The Reasoning</div>
+                    <p class="text-sm text-gray-600 leading-relaxed">${intent.reasoning}</p>
+                </div>
+                <div>
+                    <div class="text-xs uppercase tracking-widest text-opti-blue font-bold mb-3">Slot Rationale</div>
+                    <ul class="space-y-4">${slotsHtml}</ul>
+                </div>`;
+        }
+
+        // Drawer open/close
+        function openInsight() {
+            insightDrawer.classList.add('open');
+            insightOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            insightOverlay.classList.add('opacity-100');
+        }
+        function closeInsight() {
+            insightDrawer.classList.remove('open');
+            insightOverlay.classList.add('opacity-0', 'pointer-events-none');
+            insightOverlay.classList.remove('opacity-100');
+        }
+        insightToggle.addEventListener('click', openInsight);
+        insightClose.addEventListener('click', closeInsight);
+        insightOverlay.addEventListener('click', closeInsight);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeInsight(); });
+
+        // Simple Typewriter effect for the prompt
+        let typeTimeout;
+        function typeWriterEffect(element, text) {
+            clearTimeout(typeTimeout);
+            element.innerText = '';
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    typeTimeout = setTimeout(type, 15);
+                }
+            }
+            type();
+        }
+    </script>
+</body>
+</html>
