@@ -163,6 +163,81 @@
                         </div>
                     </div>
 
+                    <!-- 1B. CONVERT (COMPONENTS) -->
+                    <div id="layout-convert-components" class="hidden space-y-16 w-full animate-fade-in">
+                        <!-- Hero Slot: 50/50 Split -->
+                        <div class="flex flex-col md:flex-row gap-10 items-stretch">
+                            <!-- Left: Value proposition + CTA -->
+                            <div class="w-full md:w-1/2 space-y-8">
+                                <!-- Prose Block (Headline) -->
+                                <div class="border-2 border-dashed border-purple-400 bg-purple-50 p-6 pt-10 rounded-xl relative">
+                                    <span class="absolute -top-3 left-4 bg-purple-400 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Prose Block (Headline)</span>
+                                    <div class="text-[10px] text-purple-700 font-mono mb-4 bg-purple-100 p-2 rounded shadow-inner">
+                                        { "component": "prose_block", "style": "h1_display", "constraints": { "max_words": 10 } }
+                                    </div>
+                                    <h1 class="text-3xl md:text-4xl font-black text-gray-900 leading-tight">Come back to smarter experimentation.</h1>
+                                </div>
+
+                                <!-- Prose Block (Value Prop) -->
+                                <div class="border-2 border-dashed border-blue-400 bg-blue-50 p-6 pt-10 rounded-xl relative">
+                                    <span class="absolute -top-3 left-4 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Prose Block (Value Prop)</span>
+                                    <div class="text-[10px] text-blue-700 font-mono mb-4 bg-blue-100 p-2 rounded shadow-inner">
+                                        { "component": "prose_block", "constraints": { "max_words": 30 }, "render": "text-lg text-gray-600" }
+                                    </div>
+                                    <p class="text-lg text-gray-600">Pick up right where you left off — plus everything we've shipped since. Your workspace, dashboards, and integrations are still waiting for you.</p>
+                                </div>
+
+                                <!-- Action Block (Primary CTA) -->
+                                <div class="border-2 border-dashed border-green-500 bg-green-50 p-6 pt-10 rounded-xl relative">
+                                    <span class="absolute -top-3 left-4 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Action Block (Primary CTA)</span>
+                                    <div class="text-[10px] text-green-800 font-mono mb-4 bg-green-100 p-2 rounded shadow-inner">
+                                        { "component": "action_block",<br>&nbsp;&nbsp;"type": "hard_cta",<br>&nbsp;&nbsp;"priority": 1,<br>&nbsp;&nbsp;"rule": "single primary action, no competing links" }
+                                    </div>
+                                    <button class="px-8 py-4 bg-opti-blue hover:bg-opti-dark transition-colors text-white rounded-lg font-bold shadow-lg">Reactivate My Account →</button>
+                                </div>
+                            </div>
+
+                            <!-- Right: Primary media -->
+                            <div class="w-full md:w-1/2">
+                                <div class="border-2 border-dashed border-pink-400 bg-pink-50 p-6 pt-10 rounded-xl relative h-full flex flex-col">
+                                    <span class="absolute -top-3 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Media Block (Hero)</span>
+                                    <div class="text-[10px] text-pink-700 font-mono mb-4 bg-pink-100 p-2 rounded shadow-inner">
+                                        { "component": "media_block", "type": "product_shot", "role": "validate_claim" }
+                                    </div>
+                                    <div class="flex-1 min-h-[16rem] bg-pink-200 border border-pink-300 rounded-lg flex items-center justify-center text-pink-500 font-bold text-center">
+                                        [ Product Screenshot / Demo Video ]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Proof Slot -->
+                        <div class="border-2 border-dashed border-orange-400 bg-orange-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-orange-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Social Proof Block</span>
+                            <div class="text-[10px] text-orange-800 font-mono mb-6 bg-orange-100 p-2 rounded shadow-inner">
+                                { "component": "social_proof", "variant": "logo_cloud", "min_items": 3, "placement": "above_fold" }
+                            </div>
+                            <p class="text-center text-xs uppercase tracking-widest text-gray-500 font-bold mb-6">Trusted by teams at</p>
+                            <div class="flex flex-wrap justify-center items-center gap-6 md:gap-12">
+                                <div class="h-9 w-28 bg-white border border-orange-200 rounded shadow-sm flex items-center justify-center text-xs font-bold text-gray-400">LOGO</div>
+                                <div class="h-9 w-28 bg-white border border-orange-200 rounded shadow-sm flex items-center justify-center text-xs font-bold text-gray-400">LOGO</div>
+                                <div class="h-9 w-28 bg-white border border-orange-200 rounded shadow-sm flex items-center justify-center text-xs font-bold text-gray-400">LOGO</div>
+                                <div class="h-9 w-28 bg-white border border-orange-200 rounded shadow-sm flex items-center justify-center text-xs font-bold text-gray-400 hidden md:flex">LOGO</div>
+                            </div>
+                        </div>
+
+                        <!-- Reinforcement Slot -->
+                        <div class="border-2 border-dashed border-green-500 bg-green-50 p-6 pt-10 rounded-xl relative text-center">
+                            <span class="absolute -top-3 left-4 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Action Block (Reinforcement)</span>
+                            <div class="text-[10px] text-green-800 font-mono mb-6 bg-green-100 p-2 rounded shadow-inner inline-block text-left">
+                                { "component": "action_block", "type": "reinforcement_cta", "repeat_of": "hero_cta" }
+                            </div>
+                            <h2 class="text-2xl font-bold text-gray-900 mb-3">Ready when you are.</h2>
+                            <p class="text-gray-600 mb-6 max-w-md mx-auto">Restart your plan in under a minute. No re-onboarding, no lost data.</p>
+                            <button class="px-8 py-4 bg-opti-blue hover:bg-opti-dark transition-colors text-white rounded-lg font-bold shadow-lg">Reactivate My Account →</button>
+                        </div>
+                    </div>
+
                     <!-- 2. EDUCATE (BLUEPRINT) -->
                     <div id="layout-educate" class="hidden space-y-12">
                         <!-- Context Hero Slot -->
@@ -403,6 +478,78 @@
                         </div>
                     </div>
 
+                    <!-- 3B. DISCOVER (COMPONENTS) -->
+                    <div id="layout-discover-components" class="hidden space-y-8 w-full animate-fade-in">
+                        <!-- Spotlight Block -->
+                        <div class="border-2 border-dashed border-purple-400 bg-purple-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-purple-400 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Spotlight Block (Hero)</span>
+                            <div class="text-[10px] text-purple-700 font-mono mb-4 bg-purple-100 p-2 rounded shadow-inner">
+                                { "component": "spotlight_block", "source": "editorial_pick", "role": "strongest_scent_trail" }
+                            </div>
+                            <div class="relative w-full h-56 bg-gray-800 rounded-lg overflow-hidden flex items-center p-8 text-white">
+                                <div class="relative z-10 space-y-3 max-w-md">
+                                    <span class="inline-block bg-opti-green text-opti-dark text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Featured</span>
+                                    <h2 class="text-2xl font-black leading-tight">Spring 2024 Release: The Autonomous Roadmap</h2>
+                                    <p class="text-sm text-gray-300">Everything we shipped this quarter, in one place.</p>
+                                </div>
+                                <div class="absolute right-0 top-0 bottom-0 w-1/2 bg-gray-700 transform skew-x-12 translate-x-16 opacity-50"></div>
+                            </div>
+                        </div>
+
+                        <!-- Utility Bar -->
+                        <div class="border-2 border-dashed border-teal-400 bg-teal-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-teal-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Utility Bar (Search + Filter)</span>
+                            <div class="text-[10px] text-teal-700 font-mono mb-4 bg-teal-100 p-2 rounded shadow-inner">
+                                { "component": "utility_bar", "controls": ["search", "facet_filter"], "hands_control_to": "user" }
+                            </div>
+                            <div class="flex flex-col md:flex-row gap-3 items-center">
+                                <div class="flex-1 flex gap-2 w-full">
+                                    <input type="text" placeholder="Search release notes…" class="flex-1 h-11 px-4 bg-white border border-teal-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-300">
+                                    <button class="h-11 w-11 bg-opti-dark rounded-lg text-white flex items-center justify-center">🔍</button>
+                                </div>
+                                <div class="flex gap-2 w-full md:w-auto">
+                                    <button class="h-9 px-4 bg-opti-dark text-white rounded-full text-xs font-bold">All</button>
+                                    <button class="h-9 px-4 bg-white border border-teal-200 rounded-full text-xs font-bold text-gray-600">Videos</button>
+                                    <button class="h-9 px-4 bg-white border border-teal-200 rounded-full text-xs font-bold text-gray-600">Docs</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collection Block -->
+                        <div class="border-2 border-dashed border-indigo-400 bg-indigo-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-indigo-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Collection Block (Card Grid)</span>
+                            <div class="text-[10px] text-indigo-700 font-mono mb-4 bg-indigo-100 p-2 rounded shadow-inner">
+                                { "component": "collection_grid",<br>&nbsp;&nbsp;"item_template": ["thumbnail", "category", "title", "excerpt"],<br>&nbsp;&nbsp;"rule": "identical cards enable pattern-scanning" }
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="bg-white border border-indigo-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-32 bg-indigo-200 flex items-center justify-center text-indigo-400 text-xs font-bold">[ Thumbnail ]</div>
+                                    <div class="p-4">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-opti-blue">Product</span>
+                                        <h3 class="font-bold text-gray-900 mt-1 mb-1 leading-snug">Adaptive Layout Engine 2.0</h3>
+                                        <p class="text-xs text-gray-500">Layouts that assemble themselves from intent.</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white border border-indigo-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-32 bg-indigo-200 flex items-center justify-center text-indigo-400 text-xs font-bold">[ Thumbnail ]</div>
+                                    <div class="p-4">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-opti-blue">Video</span>
+                                        <h3 class="font-bold text-gray-900 mt-1 mb-1 leading-snug">Watch: Assembly in 90 seconds</h3>
+                                        <p class="text-xs text-gray-500">A quick tour of the new previewer.</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white border border-indigo-200 rounded-xl overflow-hidden shadow-sm">
+                                    <div class="h-32 bg-indigo-200 flex items-center justify-center text-indigo-400 text-xs font-bold">[ Thumbnail ]</div>
+                                    <div class="p-4">
+                                        <span class="text-[10px] font-bold uppercase tracking-wider text-opti-blue">Docs</span>
+                                        <h3 class="font-bold text-gray-900 mt-1 mb-1 leading-snug">Migrating to Slots API</h3>
+                                        <p class="text-xs text-gray-500">Step-by-step upgrade guide for teams.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 4. RESOLVE -->
                     <div id="layout-resolve" class="hidden space-y-10 max-w-3xl mx-auto">
                         <!-- Utility Hero Slot -->
@@ -464,6 +611,69 @@
                                 <div class="h-4 bg-gray-400 rounded w-3/4"></div>
                             </div>
                             <div class="h-12 w-32 bg-gray-800 rounded-lg flex-shrink-0"></div>
+                        </div>
+                    </div>
+
+                    <!-- 4B. RESOLVE (COMPONENTS) -->
+                    <div id="layout-resolve-components" class="hidden space-y-8 w-full max-w-3xl mx-auto animate-fade-in">
+                        <!-- Search Block -->
+                        <div class="border-2 border-dashed border-teal-400 bg-teal-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-teal-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Search Block (Answer Engine)</span>
+                            <div class="text-[10px] text-teal-700 font-mono mb-4 bg-teal-100 p-2 rounded shadow-inner">
+                                { "component": "answer_search", "placement": "front_and_center", "bypasses": "promotional_copy" }
+                            </div>
+                            <div class="bg-opti-dark rounded-xl p-8 text-center">
+                                <h2 class="text-xl font-bold text-white mb-6">How can we help?</h2>
+                                <div class="relative max-w-lg mx-auto">
+                                    <input type="text" placeholder="Describe your issue…" class="w-full h-14 px-5 rounded-xl text-sm focus:outline-none">
+                                    <button class="absolute right-2 top-2 h-10 px-5 bg-opti-blue text-white rounded-lg text-sm font-bold">Search</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accordion Block -->
+                        <div class="border-2 border-dashed border-blue-400 bg-blue-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Accordion Block (Progressive Disclosure)</span>
+                            <div class="text-[10px] text-blue-700 font-mono mb-4 bg-blue-100 p-2 rounded shadow-inner">
+                                { "component": "accordion", "default_state": "collapsed", "reason": "prevent cognitive overload" }
+                            </div>
+                            <div class="space-y-3">
+                                <div class="border border-blue-200 rounded-lg p-4 flex justify-between items-center bg-white">
+                                    <span class="font-semibold text-gray-800 text-sm">I can't reset my password</span>
+                                    <span class="text-gray-400 text-lg leading-none">+</span>
+                                </div>
+                                <div class="border-2 border-opti-light rounded-lg p-4 bg-white shadow-sm">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <span class="font-semibold text-gray-800 text-sm">My login says "account locked"</span>
+                                        <span class="text-gray-400 text-lg leading-none">–</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 leading-relaxed">Accounts lock after 5 failed attempts. Wait 15 minutes, then use the "Forgot password" link to generate a fresh sign-in.</p>
+                                    <div class="mt-4 flex gap-2">
+                                        <button class="h-8 px-3 bg-gray-50 border border-gray-200 rounded text-xs font-bold text-gray-500">👍 Helpful</button>
+                                        <button class="h-8 px-3 bg-gray-50 border border-gray-200 rounded text-xs font-bold text-gray-500">👎 Not helpful</button>
+                                    </div>
+                                </div>
+                                <div class="border border-blue-200 rounded-lg p-4 flex justify-between items-center bg-white">
+                                    <span class="font-semibold text-gray-800 text-sm">Two-factor codes aren't arriving</span>
+                                    <span class="text-gray-400 text-lg leading-none">+</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Escalation Block -->
+                        <div class="border-2 border-dashed border-red-400 bg-red-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Escalation Block (Contact Human)</span>
+                            <div class="text-[10px] text-red-700 font-mono mb-4 bg-red-100 p-2 rounded shadow-inner">
+                                { "component": "escalation_block", "always_visible": true, "psychology": "escape_hatch" }
+                            </div>
+                            <div class="flex items-center gap-5 bg-white border border-red-200 rounded-xl p-5">
+                                <div class="h-14 w-14 bg-red-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">🎧</div>
+                                <div class="flex-1">
+                                    <h4 class="font-bold text-gray-900">Still stuck?</h4>
+                                    <p class="text-sm text-gray-600">Talk to a support specialist — average wait under 2 minutes.</p>
+                                </div>
+                                <button class="h-11 px-5 bg-opti-dark text-white rounded-lg text-sm font-bold flex-shrink-0">Contact Human</button>
+                            </div>
                         </div>
                     </div>
 
@@ -563,6 +773,96 @@
                         </div>
                     </div>
 
+                    <!-- 5B. EVALUATE (COMPONENTS) -->
+                    <div id="layout-evaluate-components" class="hidden space-y-8 w-full animate-fade-in">
+                        <!-- Prose Block (Context) -->
+                        <div class="border-2 border-dashed border-purple-400 bg-purple-50 p-6 pt-10 rounded-xl relative text-center">
+                            <span class="absolute -top-3 left-4 bg-purple-400 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Prose Block (Context)</span>
+                            <div class="text-[10px] text-purple-700 font-mono mb-4 bg-purple-100 p-2 rounded shadow-inner text-left">
+                                { "component": "prose_block", "style": "centered_frame", "role": "frame_the_decision" }
+                            </div>
+                            <h1 class="text-3xl font-black text-gray-900 mb-2">Simple, transparent pricing</h1>
+                            <p class="text-gray-600">Choose the plan that scales with your team.</p>
+                        </div>
+
+                        <!-- Toggle Block -->
+                        <div class="border-2 border-dashed border-green-500 bg-green-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Toggle Block (Billing Frame)</span>
+                            <div class="text-[10px] text-green-800 font-mono mb-4 bg-green-100 p-2 rounded shadow-inner">
+                                { "component": "toggle_block", "options": ["monthly", "annual"], "role": "set_frame_of_reference" }
+                            </div>
+                            <div class="flex justify-center items-center gap-4">
+                                <span class="text-sm font-bold text-gray-500">Monthly</span>
+                                <div class="w-14 h-8 bg-opti-green rounded-full relative shadow-inner cursor-pointer"><div class="w-6 h-6 bg-white rounded-full absolute right-1 top-1 shadow"></div></div>
+                                <span class="text-sm font-bold text-gray-900">Annual <span class="text-opti-blue">(save 20%)</span></span>
+                            </div>
+                        </div>
+
+                        <!-- Pricing Grid Block -->
+                        <div class="border-2 border-dashed border-indigo-400 bg-indigo-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-indigo-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Pricing Grid Block</span>
+                            <div class="text-[10px] text-indigo-700 font-mono mb-4 bg-indigo-100 p-2 rounded shadow-inner">
+                                { "component": "pricing_grid", "tiers": 3, "anchor": "center_stage_effect" }
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                <div class="bg-white border border-indigo-200 rounded-xl p-6">
+                                    <h3 class="font-bold text-gray-500 uppercase text-xs tracking-wider mb-2">Basic</h3>
+                                    <div class="text-3xl font-black text-gray-900 mb-1">$0<span class="text-sm font-medium text-gray-400">/mo</span></div>
+                                    <p class="text-xs text-gray-500 mb-4">For individuals</p>
+                                    <button class="w-full h-10 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 mb-4">Get Started</button>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li class="flex gap-2"><span class="text-opti-blue">✓</span> 1 project</li>
+                                        <li class="flex gap-2"><span class="text-opti-blue">✓</span> Community support</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-opti-dark text-white rounded-xl p-6 shadow-xl md:scale-105 relative border-t-4 border-opti-green">
+                                    <div class="absolute -top-3 inset-x-0 flex justify-center"><span class="bg-opti-green text-opti-dark text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Recommended</span></div>
+                                    <h3 class="font-bold text-gray-400 uppercase text-xs tracking-wider mb-2 mt-2">Pro</h3>
+                                    <div class="text-3xl font-black mb-1">$49<span class="text-sm font-medium text-gray-400">/mo</span></div>
+                                    <p class="text-xs text-gray-400 mb-4">For growing teams</p>
+                                    <button class="w-full h-10 bg-opti-green text-opti-dark rounded-lg text-sm font-bold mb-4">Start Free Trial</button>
+                                    <ul class="space-y-2 text-sm text-gray-200">
+                                        <li class="flex gap-2"><span class="text-opti-green">✓</span> Unlimited projects</li>
+                                        <li class="flex gap-2"><span class="text-opti-green">✓</span> Priority support</li>
+                                        <li class="flex gap-2"><span class="text-opti-green">✓</span> Advanced analytics</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-white border border-indigo-200 rounded-xl p-6">
+                                    <h3 class="font-bold text-gray-500 uppercase text-xs tracking-wider mb-2">Enterprise</h3>
+                                    <div class="text-3xl font-black text-gray-900 mb-1">Custom</div>
+                                    <p class="text-xs text-gray-500 mb-4">For large orgs</p>
+                                    <button class="w-full h-10 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 mb-4">Contact Sales</button>
+                                    <ul class="space-y-2 text-sm text-gray-600">
+                                        <li class="flex gap-2"><span class="text-opti-blue">✓</span> SSO &amp; SAML</li>
+                                        <li class="flex gap-2"><span class="text-opti-blue">✓</span> Dedicated CSM</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Comparison Table Block -->
+                        <div class="border-2 border-dashed border-blue-400 bg-blue-50 p-6 pt-10 rounded-xl relative">
+                            <span class="absolute -top-3 left-4 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Comparison Table Block</span>
+                            <div class="text-[10px] text-blue-700 font-mono mb-4 bg-blue-100 p-2 rounded shadow-inner">
+                                { "component": "comparison_table", "sticky_header": true, "reason": "prevent memory strain" }
+                            </div>
+                            <div class="bg-white border border-blue-200 rounded-lg overflow-hidden">
+                                <div class="grid grid-cols-4 bg-gray-50 border-b border-gray-200 p-3 text-xs font-bold text-gray-500">
+                                    <div>Feature</div><div class="text-center">Basic</div><div class="text-center text-opti-blue">Pro</div><div class="text-center">Enterprise</div>
+                                </div>
+                                <div class="grid grid-cols-4 p-3 border-b border-gray-100 text-sm items-center">
+                                    <div class="text-gray-700">Projects</div><div class="text-center text-gray-500">1</div><div class="text-center font-bold text-gray-900">∞</div><div class="text-center text-gray-900">∞</div>
+                                </div>
+                                <div class="grid grid-cols-4 p-3 border-b border-gray-100 text-sm items-center">
+                                    <div class="text-gray-700">Advanced analytics</div><div class="text-center text-gray-300">—</div><div class="text-center text-opti-blue font-bold">✓</div><div class="text-center text-gray-900">✓</div>
+                                </div>
+                                <div class="grid grid-cols-4 p-3 text-sm items-center">
+                                    <div class="text-gray-700">SSO &amp; SAML</div><div class="text-center text-gray-300">—</div><div class="text-center text-gray-300">—</div><div class="text-center text-gray-900">✓</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- 6. OPERATIONS -->
                     <div id="layout-operations" class="hidden flex h-[700px] border border-gray-200 rounded-2xl overflow-hidden">
                         <!-- Persistent Nav Slot (Sidebar) -->
@@ -635,6 +935,74 @@
                                             <div class="bg-gray-50 rounded border border-gray-100"></div>
                                             <div class="bg-gray-50 rounded border border-gray-100"></div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6B. OPERATIONS (COMPONENTS) -->
+                    <div id="layout-operations-components" class="hidden w-full animate-fade-in">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <!-- Nav Block -->
+                            <div class="border-2 border-dashed border-yellow-400 bg-yellow-50 p-4 pt-10 rounded-xl relative w-full md:w-72 flex-shrink-0">
+                                <span class="absolute -top-3 left-4 bg-yellow-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Nav Block (Persistent)</span>
+                                <div class="text-[10px] text-yellow-800 font-mono mb-4 bg-yellow-100 p-2 rounded shadow-inner">
+                                    { "component": "nav_block", "position": "fixed", "role": "spatial_anchor" }
+                                </div>
+                                <div class="bg-opti-dark rounded-lg p-4 space-y-2 h-full">
+                                    <div class="text-opti-green font-black text-sm mb-4">◎ Admin Console</div>
+                                    <div class="flex items-center gap-3 bg-gray-800 rounded p-2 text-white text-sm"><span>▦</span> Dashboard</div>
+                                    <div class="flex items-center gap-3 p-2 text-gray-400 text-sm"><span>◔</span> Patients</div>
+                                    <div class="flex items-center gap-3 p-2 text-gray-400 text-sm"><span>◈</span> Alerts</div>
+                                    <div class="flex items-center gap-3 p-2 text-gray-400 text-sm"><span>⚙</span> Settings</div>
+                                </div>
+                            </div>
+
+                            <!-- Right column: Stats + Widgets -->
+                            <div class="flex-1 space-y-4">
+                                <!-- Stat Block -->
+                                <div class="border-2 border-dashed border-green-500 bg-green-50 p-6 pt-10 rounded-xl relative">
+                                    <span class="absolute -top-3 left-4 bg-green-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Stat Block (KPI Row)</span>
+                                    <div class="text-[10px] text-green-800 font-mono mb-4 bg-green-100 p-2 rounded shadow-inner">
+                                        { "component": "stat_block", "layout": "row", "role": "instant_pulse_check" }
+                                    </div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                        <div class="bg-white border border-green-200 rounded-lg p-4"><div class="text-xs text-gray-500 mb-1">Intake Today</div><div class="text-2xl font-black text-gray-900">142</div><div class="text-xs text-green-600 font-bold">▲ 12%</div></div>
+                                        <div class="bg-white border border-green-200 rounded-lg p-4"><div class="text-xs text-gray-500 mb-1">Open Alerts</div><div class="text-2xl font-black text-gray-900">7</div><div class="text-xs text-red-500 font-bold">▲ 3</div></div>
+                                        <div class="bg-white border border-green-200 rounded-lg p-4"><div class="text-xs text-gray-500 mb-1">Avg Wait</div><div class="text-2xl font-black text-gray-900">18m</div><div class="text-xs text-green-600 font-bold">▼ 4m</div></div>
+                                    </div>
+                                </div>
+
+                                <!-- Widget Block (Chart) -->
+                                <div class="border-2 border-dashed border-pink-400 bg-pink-50 p-6 pt-10 rounded-xl relative">
+                                    <span class="absolute -top-3 left-4 bg-pink-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Widget Block (Chart)</span>
+                                    <div class="text-[10px] text-pink-700 font-mono mb-4 bg-pink-100 p-2 rounded shadow-inner">
+                                        { "component": "widget", "type": "bar_chart", "priority_zone": "top_left" }
+                                    </div>
+                                    <div class="bg-white border border-pink-200 rounded-lg p-4">
+                                        <div class="text-sm font-bold text-gray-700 mb-4">Weekly Intake</div>
+                                        <div class="h-40 flex items-end gap-3 border-b-2 border-l-2 border-gray-200 p-2">
+                                            <div class="flex-1 bg-opti-light h-1/3 rounded-t"></div>
+                                            <div class="flex-1 bg-opti-light h-1/2 rounded-t"></div>
+                                            <div class="flex-1 bg-opti-blue h-full rounded-t"></div>
+                                            <div class="flex-1 bg-opti-light h-2/3 rounded-t"></div>
+                                            <div class="flex-1 bg-opti-light h-3/4 rounded-t"></div>
+                                            <div class="flex-1 bg-opti-light h-1/2 rounded-t"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Widget Block (Alert Feed) -->
+                                <div class="border-2 border-dashed border-red-400 bg-red-50 p-6 pt-10 rounded-xl relative">
+                                    <span class="absolute -top-3 left-4 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Widget Block (Alert Feed)</span>
+                                    <div class="text-[10px] text-red-700 font-mono mb-4 bg-red-100 p-2 rounded shadow-inner">
+                                        { "component": "widget", "type": "alert_feed", "sort": "severity_desc" }
+                                    </div>
+                                    <div class="bg-white border border-red-200 rounded-lg p-4 space-y-3">
+                                        <div class="flex items-center gap-3 border-b border-gray-100 pb-2"><span class="w-2.5 h-2.5 bg-red-500 rounded-full flex-shrink-0"></span><span class="text-sm text-gray-700 flex-1">ICU capacity at 94%</span><span class="text-xs text-gray-400">2m</span></div>
+                                        <div class="flex items-center gap-3 border-b border-gray-100 pb-2"><span class="w-2.5 h-2.5 bg-yellow-400 rounded-full flex-shrink-0"></span><span class="text-sm text-gray-700 flex-1">Lab results delayed — Ward B</span><span class="text-xs text-gray-400">15m</span></div>
+                                        <div class="flex items-center gap-3"><span class="w-2.5 h-2.5 bg-gray-300 rounded-full flex-shrink-0"></span><span class="text-sm text-gray-700 flex-1">Shift handover complete</span><span class="text-xs text-gray-400">1h</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -800,21 +1168,29 @@
             navContainer.appendChild(btn);
         });
 
+        // A layout has a component breakdown if a matching `-components` block exists
+        function hasComponents(id) {
+            return !!document.getElementById(`layout-${id}-components`);
+        }
+
         function setMode(mode) {
             currentMode = mode;
             const btnBlueprint = document.getElementById('mode-blueprint');
             const btnComponents = document.getElementById('mode-components');
-            
+
             if (mode === 'components') {
                 btnComponents.classList.add('bg-white', 'shadow-sm', 'text-opti-dark');
                 btnComponents.classList.remove('text-gray-500');
                 btnBlueprint.classList.remove('bg-white', 'shadow-sm', 'text-opti-dark');
                 btnBlueprint.classList.add('text-gray-500');
-                
-                // Force switch to educate intent to show the component breakdown
-                const educateIntent = intents.find(i => i.id === 'educate');
-                selectIntent(educateIntent);
-                
+
+                // Keep the current intent if it has a breakdown; otherwise jump to the first that does
+                let target = activeIntent;
+                if (!target || !hasComponents(target.id)) {
+                    target = intents.find(i => hasComponents(i.id));
+                }
+                if (target) selectIntent(target);
+
             } else {
                 btnBlueprint.classList.add('bg-white', 'shadow-sm', 'text-opti-dark');
                 btnBlueprint.classList.remove('text-gray-500');
@@ -829,8 +1205,8 @@
             activeId = selected.id;
             activeIntent = selected;
 
-            // If we are in component mode but click a different intent, switch back to blueprint mode
-            if (currentMode === 'components' && selected.id !== 'educate') {
+            // If we are in component mode but the picked intent has no breakdown, fall back to blueprint
+            if (currentMode === 'components' && !hasComponents(selected.id)) {
                 setMode('blueprint');
                 return; // setMode will recall selectIntent
             }
@@ -863,8 +1239,8 @@
             });
 
             // Show selected layout
-            if (currentMode === 'components' && selected.id === 'educate') {
-                const compLayout = document.getElementById('layout-educate-components');
+            if (currentMode === 'components' && hasComponents(selected.id)) {
+                const compLayout = document.getElementById(`layout-${selected.id}-components`);
                 compLayout.classList.remove('hidden');
                 currentLayoutName.innerText = `Component Breakdown: ${selected.layoutName}`;
             } else {
