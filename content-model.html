@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic CMS Content Model Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        opti: {
+                            green: '#ABFF44',
+                            dark: '#08251A',
+                            blue: '#007879',
+                            light: '#91D8DA'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['Roboto Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;900&family=Roboto+Mono:wght@400;700&display=swap');
+        
+        body { background-color: #f8fafc; }
+        
+        /* Hard shadow for neo-brutalism Agentic CMS feel */
+        .card-shadow {
+            box-shadow: 8px 8px 0px #08251A;
+            transition: all 0.2s ease;
+        }
+        .card-shadow:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px #ABFF44;
+        }
+        
+        .code-block {
+            background-color: #08251A;
+            color: #91D8DA;
+        }
+        .code-key { color: #ABFF44; }
+        .code-string { color: #e2e8f0; }
+        .code-enum { color: #facc15; }
+        
+        /* Connection lines */
+        .connector {
+            position: relative;
+        }
+        .connector::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: #007879;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-12 text-gray-800 antialiased relative overflow-x-hidden">
+
+    <!-- Background decoration -->
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-5" style="background-image: radial-gradient(#08251A 2px, transparent 2px); background-size: 30px 30px;"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+        
+        <!-- Header -->
+        <header class="text-center mb-16 space-y-4">
+            <div class="inline-block px-4 py-1 bg-opti-dark text-opti-green font-mono text-sm font-bold rounded-full border-2 border-opti-dark mb-4 uppercase tracking-widest">
+                Schema Architecture
+            </div>
+            <h1 class="text-5xl md:text-6xl font-black text-opti-dark tracking-tight leading-tight">
+                The Universal <span class="text-transparent bg-clip-text bg-gradient-to-r from-opti-blue to-opti-green" style="-webkit-text-stroke: 2px #08251A;">Primitives</span>
+            </h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto font-medium">
+                The 5 fundamental building blocks of an Agentic CMS. By using strict Enums and References, the AI generates semantic payloads, not unstructured HTML.
+            </p>
+        </header>
+
+        <!-- The 5 Primitives Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            
+            <!-- 1. Prose Block -->
+            <div class="bg-white border-4 border-opti-dark rounded-2xl p-6 flex flex-col card-shadow">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-purple-100 border-2 border-purple-500 text-purple-600 rounded-xl flex items-center justify-center text-3xl font-black">
+                        ¶
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-opti-dark leading-none">Prose Block</h2>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">type: document</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-6 flex-1">
+                    Rich text container for narrative copy. Handles headings, body paragraphs, and stylistic overrides like pull quotes.
+                </p>
+                <!-- Schema Preview -->
+                <div class="code-block p-4 rounded-xl font-mono text-xs leading-relaxed">
+                    <div class="mb-2 text-gray-400">// Core Schema Fields</div>
+                    <div><span class="code-key">content_body:</span> <span class="code-string">RichText</span></div>
+                    <div class="mt-2 text-gray-400">// Dictates visual rendering</div>
+                    <div><span class="code-key">semantic_variant:</span> <span class="code-enum">Enum</span></div>
+                    <div class="pl-4 text-gray-400">└─ [standard_body, lede_paragraph, pull_quote]</div>
+                </div>
+            </div>
+
+            <!-- 2. Media Block -->
+            <div class="bg-white border-4 border-opti-dark rounded-2xl p-6 flex flex-col card-shadow">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-pink-100 border-2 border-pink-500 text-pink-600 rounded-xl flex items-center justify-center text-3xl font-black">
+                        🖼️
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-opti-dark leading-none">Media Block</h2>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">type: document</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-6 flex-1">
+                    Visual asset container for images, looping videos, or AI-generated data visualizations.
+                </p>
+                <!-- Schema Preview -->
+                <div class="code-block p-4 rounded-xl font-mono text-xs leading-relaxed">
+                    <div><span class="code-key">media_type:</span> <span class="code-enum">Enum</span></div>
+                    <div class="pl-4 text-gray-400">└─ [static_image, looping_video, data_chart]</div>
+                    <div class="mt-2"><span class="code-key">asset_reference:</span> <span class="code-string">MediaLink</span></div>
+                    <div><span class="code-key">alt_text:</span> <span class="code-string">String</span> <span class="text-red-400">(Required)</span></div>
+                    <div class="mt-2"><span class="code-key">aspect_ratio:</span> <span class="code-enum">Enum</span></div>
+                    <div class="pl-4 text-gray-400">└─ [16:9, 4:3, 1:1, auto]</div>
+                </div>
+            </div>
+
+            <!-- 3. Action Block -->
+            <div class="bg-white border-4 border-opti-dark rounded-2xl p-6 flex flex-col card-shadow">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-green-100 border-2 border-green-500 text-green-600 rounded-xl flex items-center justify-center text-3xl font-black">
+                        👆
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-opti-dark leading-none">Action Block</h2>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">type: document</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-6 flex-1">
+                    Interactive trigger for conversions, navigation, or lead capture (buttons, links, micro-forms).
+                </p>
+                <!-- Schema Preview -->
+                <div class="code-block p-4 rounded-xl font-mono text-xs leading-relaxed">
+                    <div><span class="code-key">interaction_type:</span> <span class="code-enum">Enum</span></div>
+                    <div class="pl-4 text-gray-400">└─ [button, text_link, email_form]</div>
+                    <div class="mt-2"><span class="code-key">action_label:</span> <span class="code-string">String</span> <span class="text-gray-400">(Max 30 chars)</span></div>
+                    <div><span class="code-key">destination_url:</span> <span class="code-string">URL</span></div>
+                    <div class="mt-2"><span class="code-key">visual_hierarchy:</span> <span class="code-enum">Enum</span></div>
+                    <div class="pl-4 text-gray-400">└─ [primary, secondary, ghost]</div>
+                </div>
+            </div>
+
+            <!-- 4. Wayfinding Block -->
+            <div class="bg-white border-4 border-opti-dark rounded-2xl p-6 flex flex-col card-shadow lg:col-start-1 lg:col-span-1 lg:translate-x-1/2">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-yellow-100 border-2 border-yellow-500 text-yellow-600 rounded-xl flex items-center justify-center text-3xl font-black">
+                        🧭
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-opti-dark leading-none">Wayfinding Block</h2>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">type: document</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mb-6 flex-1">
+                    Structural navigation helpers like Table of Contents, Breadcrumbs, or Progress Wizards.
+                </p>
+                <!-- Schema Preview -->
+                <div class="code-block p-4 rounded-xl font-mono text-xs leading-relaxed">
+                    <div><span class="code-key">wayfinding_type:</span> <span class="code-enum">Enum</span></div>
+                    <div class="pl-4 text-gray-400">└─ [toc, breadcrumbs, wizard]</div>
+                    <div class="mt-2"><span class="code-key">navigation_nodes:</span> <span class="code-string">Array[Object]</span></div>
+                    <div class="pl-4 text-gray-400">├─ label: String</div>
+                    <div class="pl-4 text-gray-400">└─ target: String</div>
+                    <div class="mt-2"><span class="code-key">scroll_behavior:</span> <span class="code-enum">Enum</span></div>
+                </div>
+            </div>
+
+            <!-- 5. Card Block (Compositional) -->
+            <div class="bg-opti-light border-4 border-opti-dark rounded-2xl p-6 flex flex-col card-shadow lg:col-start-2 lg:col-span-2 relative lg:translate-x-1/4">
+                <!-- Highlight badge for composition -->
+                <div class="absolute -top-4 -right-4 bg-opti-green border-2 border-opti-dark text-opti-dark font-black px-4 py-1 rounded-full shadow-[4px_4px_0px_#08251A] rotate-3 transform z-20 text-sm">
+                    Compositional! 🧩
+                </div>
+                
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-14 h-14 bg-white border-2 border-opti-dark text-opti-blue rounded-xl flex items-center justify-center text-3xl font-black shadow-[4px_4px_0px_#08251A]">
+                        🗂️
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-opti-dark leading-none">Card Block</h2>
+                        <span class="text-xs font-bold text-opti-dark opacity-70 uppercase tracking-widest">type: document</span>
+                    </div>
+                </div>
+                <p class="text-sm text-opti-dark mb-6 flex-1 font-medium max-w-lg">
+                    A standardized micro-container for displaying a single entity. Notice how it <span class="bg-opti-green px-1">references</span> other blocks rather than redefining fields, keeping the AI's payload clean.
+                </p>
+                
+                <div class="flex flex-col md:flex-row gap-4">
+                    <!-- Schema Preview -->
+                    <div class="code-block p-4 rounded-xl font-mono text-xs leading-relaxed flex-1 shadow-inner">
+                        <div class="text-gray-400 mb-2">// Uses content References</div>
+                        <div><span class="code-key">title:</span> <span class="code-string">String</span> <span class="text-gray-400">(Max 80 chars)</span></div>
+                        <div><span class="code-key">summary_text:</span> <span class="code-string">String</span></div>
+                        <div><span class="code-key">meta_tag:</span> <span class="code-string">String</span></div>
+                        
+                        <div class="mt-3 p-2 bg-[#0d3626] rounded border border-[#007879] relative">
+                            <span class="absolute -left-3 top-2 text-[#007879]">🔗</span>
+                            <span class="code-key">thumbnail_media:</span> <span class="code-enum text-pink-300">Reference[Media Block]</span>
+                        </div>
+                        <div class="mt-2 p-2 bg-[#0d3626] rounded border border-[#007879] relative">
+                            <span class="absolute -left-3 top-2 text-[#007879]">🔗</span>
+                            <span class="code-key">card_action:</span> <span class="code-enum text-green-300">Reference[Action Block]</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Visual rendering of the card -->
+                    <div class="w-full md:w-64 bg-white border-2 border-opti-dark rounded-xl overflow-hidden flex flex-col">
+                        <div class="h-24 bg-pink-100 flex items-center justify-center border-b-2 border-opti-dark relative overflow-hidden">
+                            <span class="text-pink-400 font-black tracking-widest text-xs uppercase z-10 bg-white/80 px-2 py-1 rounded">Media Block Ref</span>
+                            <!-- diagonal lines bg -->
+                            <div class="absolute inset-0 opacity-20" style="background-image: repeating-linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%, #000), repeating-linear-gradient(45deg, #000 25%, bg-pink-100 25%, bg-pink-100 75%, #000 75%, #000); background-position: 0 0, 10px 10px; background-size: 20px 20px;"></div>
+                        </div>
+                        <div class="p-4 flex-1 flex flex-col">
+                            <div class="text-[10px] font-bold text-opti-blue uppercase mb-1">Meta Tag</div>
+                            <div class="font-black text-gray-800 leading-tight mb-2">Title of the Card Goes Here</div>
+                            <div class="h-2 bg-gray-200 rounded w-full mb-1"></div>
+                            <div class="h-2 bg-gray-200 rounded w-2/3 mb-4"></div>
+                            
+                            <div class="mt-auto pt-3 border-t border-gray-100 flex justify-between items-center">
+                                <span class="text-[10px] text-green-600 font-bold uppercase tracking-wider bg-green-50 px-2 py-1 rounded">Action Ref</span>
+                                <span class="text-opti-blue font-black text-lg leading-none">&rarr;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer Note -->
+        <div class="mt-16 bg-opti-dark text-white rounded-2xl p-8 border-4 border-opti-green card-shadow flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 opacity-10">
+                <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+            <div class="w-16 h-16 bg-opti-green rounded-full flex items-center justify-center text-opti-dark text-3xl flex-shrink-0 z-10">
+                🤖
+            </div>
+            <div class="z-10">
+                <h3 class="text-2xl font-black text-opti-green mb-2">Why this matters for the AI</h3>
+                <p class="text-gray-300">
+                    By limiting the CMS to these 5 primitives, the Agent doesn't have to learn CSS, HTML, or proprietary site builders. It simply receives an <strong class="text-white">Intent</strong>, selects a <strong class="text-white">Layout Blueprint</strong>, and writes JSON objects containing these <strong class="text-white">Primitives</strong> to fill the slots. The front-end application handles the rest.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

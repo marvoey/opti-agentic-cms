@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic CMS — Project Index</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        opti: {
+                            green: '#ABFF44',
+                            dark: '#08251A',
+                            blue: '#007879',
+                            light: '#91D8DA'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        .card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: #ABFF44;
+        }
+        .card:hover .card-arrow {
+            transform: translateX(4px);
+        }
+        .card-arrow {
+            transition: transform 0.2s ease;
+        }
+        .dot {
+            width: 8px; height: 8px; border-radius: 50%; background: #007879;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+    </style>
+</head>
+<body class="bg-opti-dark min-h-screen font-sans text-white flex flex-col">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800 px-8 py-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="dot"></div>
+            <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Optimizely</span>
+        </div>
+        <span class="text-xs text-gray-600 uppercase tracking-widest font-bold">Internal Prototype</span>
+    </header>
+
+    <!-- Hero -->
+    <main class="flex-1 flex flex-col items-center justify-center px-6 py-16">
+        <div class="max-w-2xl w-full text-center mb-14">
+            <h1 class="text-5xl font-black uppercase tracking-tight leading-none mb-4">
+                Agentic<br><span class="text-opti-green">CMS</span>
+            </h1>
+            <p class="text-gray-400 text-lg">Prototypes exploring AI-driven content assembly and layout orchestration.</p>
+        </div>
+
+        <!-- Cards -->
+        <div class="max-w-2xl w-full space-y-4">
+
+            <a href="Opti-Agentic_CMS_Layout_Engine.html" class="card block bg-gray-900 border border-gray-700 rounded-2xl p-6 group">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold uppercase tracking-widest text-opti-green">v2 — Latest</span>
+                        </div>
+                        <h2 class="text-xl font-black uppercase tracking-tight text-white mb-1">Layout Engine</h2>
+                        <p class="text-sm text-gray-400">Intent-driven layout selection. The agent maps user goals to layout blueprints and assembles content slots in real time.</p>
+                    </div>
+                    <svg class="card-arrow w-5 h-5 text-opti-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </div>
+            </a>
+
+            <a href="Agentic_CMS_Layout_Engine.html" class="card block bg-gray-900 border border-gray-700 rounded-2xl p-6 group">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold uppercase tracking-widest text-opti-light">v1</span>
+                        </div>
+                        <h2 class="text-xl font-black uppercase tracking-tight text-white mb-1">Layout Engine</h2>
+                        <p class="text-sm text-gray-400">Original layout previewer — wireframe-based component breakdown with slot annotation and AI reasoning drawer.</p>
+                    </div>
+                    <svg class="card-arrow w-5 h-5 text-opti-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </div>
+            </a>
+
+            <a href="content-model.html" class="card block bg-gray-900 border border-gray-700 rounded-2xl p-6 group">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-xs font-bold uppercase tracking-widest text-gray-600">WIP</span>
+                        </div>
+                        <h2 class="text-xl font-black uppercase tracking-tight text-white mb-1">Content Model</h2>
+                        <p class="text-sm text-gray-400">Structured content type schema explorer and property group visualizer.</p>
+                    </div>
+                    <svg class="card-arrow w-5 h-5 text-opti-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 px-8 py-5 text-center">
+        <span class="text-xs text-gray-700 uppercase tracking-widest font-bold">Optimizely &mdash; Agentic CMS Research</span>
+    </footer>
+
+</body>
+</html>
