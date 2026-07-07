@@ -3,128 +3,590 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agentic CMS — Project Index</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        opti: {
-                            green: '#ABFF44',
-                            dark: '#08251A',
-                            blue: '#007879',
-                            light: '#91D8DA'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Agentic CMS — Optimizely Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,900&display=swap" rel="stylesheet">
     <style>
-        ::-webkit-scrollbar { width: 8px; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:           #08251A;
+            --surface:      #0C2A1A;
+            --border:       rgba(171, 255, 68, 0.07);
+            --border-hover: rgba(171, 255, 68, 0.28);
+            --text:         #E2EDE4;
+            --text-muted:   rgba(226, 237, 228, 0.46);
+            --text-faint:   rgba(226, 237, 228, 0.18);
+            --accent:       #ABFF44;
+            --teal:         #007879;
+            --teal-light:   #91D8DA;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        ::-webkit-scrollbar-thumb { background: rgba(171,255,68,0.12); border-radius: 3px; }
+
+        /* ─── NAV ─────────────────────────────────────────── */
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            height: 56px;
+            background: rgba(8, 37, 26, 0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            gap: 1.5rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+        .nav-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--teal);
+            animation: blink 2.8s ease-in-out infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.35; }
+        }
+        .nav-wordmark {
+            font-size: 0.8125rem;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+        .nav-slash {
+            font-size: 0.75rem;
+            font-weight: 300;
+            color: var(--text-faint);
+        }
+        .nav-sub {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.125rem;
+            flex: 1;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .nav-links::-webkit-scrollbar { display: none; }
+
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.35rem 0.65rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            text-decoration: none;
+            color: var(--text-muted);
+            transition: color 0.15s, background 0.15s;
+        }
+        .nav-link:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+        .nav-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        .nav-num {
+            font-size: 0.5625rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+        .nav-pill {
+            font-size: 0.5rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: rgba(0,120,121,0.25);
+            color: var(--teal-light);
+            padding: 0.1rem 0.35rem;
+            border-radius: 3px;
+        }
+        .nav-sep {
+            width: 1px; height: 14px;
+            background: var(--text-faint);
+            flex-shrink: 0;
+            margin: 0 0.25rem;
+        }
+
+        .nav-badge {
+            flex-shrink: 0;
+            font-size: 0.5625rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+            border: 1px solid var(--text-faint);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        /* ─── HERO ────────────────────────────────────────── */
+
+        .hero {
+            padding: 4.5rem 2rem 3.5rem;
+        }
+        .hero-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero-overline {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+        }
+
+        .hero-headline {
+            font-size: clamp(3.75rem, 10.5vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 0.9;
+            text-transform: uppercase;
+            color: #fff;
+            text-wrap: balance;
+            margin-bottom: 2rem;
+        }
+        .hero-headline .accent { color: var(--accent); }
+
+        .hero-desc {
+            font-size: 1.0625rem;
+            line-height: 1.65;
+            color: var(--text-muted);
+            max-width: 46ch;
+            margin-bottom: 3rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .hero-stat { display: flex; flex-direction: column; gap: 0.2rem; }
+        .hero-stat-n {
+            font-size: 1.625rem;
+            font-weight: 900;
+            line-height: 1;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+        }
+        .hero-stat-l {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .stat-sep {
+            width: 1px; height: 2rem;
+            background: var(--text-faint);
+        }
+
+        /* ─── SECTIONS ────────────────────────────────────── */
+
+        .sections {
+            flex: 1;
+            padding: 0 2rem 5rem;
+        }
+        .sections-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .section-hd {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            padding-bottom: 1.125rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.25rem;
+        }
+        .section-label {
+            font-size: 0.6875rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .section-ct {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            color: var(--text-faint);
+        }
+
+        /* ─── CARD GRIDS ──────────────────────────────────── */
+
+        .grid-research {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+            gap: 1rem;
+        }
+        .grid-proto {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        /* ─── CARDS ───────────────────────────────────────── */
 
         .card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.625rem;
+            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            border-color: #ABFF44;
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: radial-gradient(ellipse 60% 40% at 90% 10%, rgba(171,255,68,0.05), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
         }
-        .card:hover .card-arrow {
-            transform: translateX(4px);
+        .card:hover { border-color: var(--border-hover); transform: translateY(-2px); box-shadow: 0 18px 44px rgba(0,0,0,0.4); }
+        .card:hover::before { opacity: 1; }
+        .card:hover .c-arrow { transform: translateX(3px); }
+        .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+        .c-top { flex: 1; }
+
+        .c-tag {
+            display: inline-block;
+            font-size: 0.5625rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 0.875rem;
         }
-        .card-arrow {
-            transition: transform 0.2s ease;
+        .c-tag-green { color: var(--accent); }
+        .c-tag-teal  { color: var(--teal-light); }
+        .c-tag-muted { color: var(--text-faint); }
+
+        .c-title {
+            font-size: 0.9375rem;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+            text-transform: uppercase;
+            color: #fff;
+            text-wrap: balance;
+            margin-bottom: 0.625rem;
         }
-        .dot {
-            width: 8px; height: 8px; border-radius: 50%; background: #007879;
-            animation: pulse-dot 2s ease-in-out infinite;
+        .c-desc {
+            font-size: 0.8125rem;
+            line-height: 1.65;
+            color: var(--text-muted);
+            margin-bottom: 1.375rem;
         }
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.8); }
+
+        .c-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+        }
+        .c-type {
+            font-size: 0.5625rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+        .c-arrow {
+            color: var(--accent);
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+
+        /* Research card: accent bar top */
+        .card-research .c-bar {
+            width: 28px; height: 3px;
+            border-radius: 2px;
+            background: var(--accent);
+            margin-bottom: 1.25rem;
+        }
+
+        /* Prototype card: live indicator */
+        .card-proto .c-status {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            margin-bottom: 1rem;
+        }
+        .c-status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+        }
+        .c-status-dot-live  { background: var(--teal); }
+        .c-status-dot-muted { background: var(--text-faint); }
+        .c-status-label {
+            font-size: 0.5625rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .c-status-label-live  { color: var(--teal-light); }
+        .c-status-label-muted { color: var(--text-faint); }
+
+        /* Featured card: spans 2 columns */
+        .card-featured { grid-column: span 2; }
+        .card-featured .c-title { font-size: 1.125rem; }
+        .card-featured .c-desc  { font-size: 0.875rem; max-width: 56ch; }
+
+        @media (max-width: 600px) {
+            .card-featured { grid-column: span 1; }
+        }
+
+        /* ─── FOOTER ──────────────────────────────────────── */
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 1.375rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .footer-txt {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+
+        /* ─── RESPONSIVE ──────────────────────────────────── */
+
+        @media (max-width: 768px) {
+            .nav                { padding: 0 1.25rem; gap: 1rem; }
+            .nav-slash,
+            .nav-sub,
+            .nav-badge          { display: none; }
+            .hero               { padding: 3rem 1.25rem 2.5rem; }
+            .sections           { padding: 0 1.25rem 3.5rem; }
+            .stat-sep           { display: none; }
         }
     </style>
 </head>
-<body class="bg-opti-dark min-h-screen font-sans text-white flex flex-col">
+<body>
 
-    <!-- Header -->
-    <header class="border-b border-gray-800 px-8 py-6 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <div class="dot"></div>
-            <span class="text-xs font-bold uppercase tracking-widest text-gray-500">Optimizely</span>
+    <!-- ── Navigation ───────────────────────────────────── -->
+    <nav class="nav" aria-label="Main navigation">
+        <a href="index.html" class="nav-brand" aria-label="Agentic CMS home">
+            <div class="nav-dot" aria-hidden="true"></div>
+            <span class="nav-wordmark">Optimizely</span>
+            <span class="nav-slash" aria-hidden="true">/</span>
+            <span class="nav-sub">Agentic CMS</span>
+        </a>
+
+        <div class="nav-links" role="list">
+            <a href="000-optimizely_ai_agentic_cms_conversation.html" class="nav-link" role="listitem">
+                <span class="nav-num">000</span> AI Positioning
+            </a>
+            <a href="001-agentic.html" class="nav-link" role="listitem">
+                <span class="nav-num">001</span> Assembly Analysis
+            </a>
+            <div class="nav-sep" role="separator" aria-hidden="true"></div>
+            <a href="Opti-Agentic_CMS_Layout_Engine.html" class="nav-link" role="listitem">
+                Layout Engine <span class="nav-pill">v2</span>
+            </a>
+            <a href="Agentic_CMS_Layout_Engine.html" class="nav-link" role="listitem">
+                Layout Engine <span class="nav-pill" style="background:rgba(255,255,255,0.06);color:var(--text-faint);">v1</span>
+            </a>
+            <a href="content-model.html" class="nav-link" role="listitem">
+                Content Model
+            </a>
         </div>
-        <span class="text-xs text-gray-600 uppercase tracking-widest font-bold">Internal Prototype</span>
+
+        <span class="nav-badge" aria-label="Internal prototype">Internal</span>
+    </nav>
+
+
+    <!-- ── Hero ─────────────────────────────────────────── -->
+    <header class="hero">
+        <div class="hero-inner">
+            <p class="hero-overline">Optimizely Internal Research &middot; 2026</p>
+            <h1 class="hero-headline">
+                Agentic<br><span class="accent">CMS.</span>
+            </h1>
+            <p class="hero-desc">
+                Prototypes and analysis exploring how AI shifts digital experience from search&#8209;and&#8209;retrieval toward governed, intent&#8209;aware content assembly.
+            </p>
+            <div class="hero-stats" aria-label="Summary">
+                <div class="hero-stat">
+                    <span class="hero-stat-n">5</span>
+                    <span class="hero-stat-l">Artifacts</span>
+                </div>
+                <div class="stat-sep" aria-hidden="true"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-n">2</span>
+                    <span class="hero-stat-l">Research Briefs</span>
+                </div>
+                <div class="stat-sep" aria-hidden="true"></div>
+                <div class="hero-stat">
+                    <span class="hero-stat-n">3</span>
+                    <span class="hero-stat-l">Prototypes</span>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- Hero -->
-    <main class="flex-1 flex flex-col items-center justify-center px-6 py-16">
-        <div class="max-w-2xl w-full text-center mb-14">
-            <h1 class="text-5xl font-black uppercase tracking-tight leading-none mb-4">
-                Agentic<br><span class="text-opti-green">CMS</span>
-            </h1>
-            <p class="text-gray-400 text-lg">Prototypes exploring AI-driven content assembly and layout orchestration.</p>
-        </div>
 
-        <!-- Cards -->
-        <div class="max-w-2xl w-full space-y-4">
+    <!-- ── Sections ─────────────────────────────────────── -->
+    <main class="sections">
+        <div class="sections-inner">
 
-            <a href="Opti-Agentic_CMS_Layout_Engine.html" class="card block bg-gray-900 border border-gray-700 rounded-2xl p-6 group">
-                <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-xs font-bold uppercase tracking-widest text-opti-green">v2 — Latest</span>
-                        </div>
-                        <h2 class="text-xl font-black uppercase tracking-tight text-white mb-1">Layout Engine</h2>
-                        <p class="text-sm text-gray-400">Intent-driven layout selection. The agent maps user goals to layout blueprints and assembles content slots in real time.</p>
-                    </div>
-                    <svg class="card-arrow w-5 h-5 text-opti-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
+            <!-- Research -->
+            <section aria-labelledby="sec-research">
+                <div class="section-hd">
+                    <span class="section-label" id="sec-research">Research &amp; Analysis</span>
+                    <span class="section-ct">2 documents</span>
                 </div>
-            </a>
+                <div class="grid-research">
 
-            <a href="Agentic_CMS_Layout_Engine.html" class="card block bg-gray-900 border border-gray-700 rounded-2xl p-6 group">
-                <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-xs font-bold uppercase tracking-widest text-opti-light">v1</span>
+                    <a href="000-optimizely_ai_agentic_cms_conversation.html" class="card card-research">
+                        <div class="c-top">
+                            <div class="c-bar" aria-hidden="true"></div>
+                            <span class="c-tag c-tag-green">000 &middot; Research Brief</span>
+                            <h2 class="c-title">Optimizely, AI Positioning &amp; the Rise of Agentic CMS</h2>
+                            <p class="c-desc">Strategic analysis of Optimizely's evolution from CMS to AI-native platform, why the standard AI story feels unsatisfying, and the shift from retrieval to governed content composition.</p>
                         </div>
-                        <h2 class="text-xl font-black uppercase tracking-tight text-white mb-1">Layout Engine</h2>
-                        <p class="text-sm text-gray-400">Original layout previewer — wireframe-based component breakdown with slot annotation and AI reasoning drawer.</p>
-                    </div>
-                    <svg class="card-arrow w-5 h-5 text-opti-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
-                </div>
-            </a>
+                        <div class="c-foot">
+                            <span class="c-type">Strategic Analysis</span>
+                            <svg class="c-arrow" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                    </a>
 
-            <a href="content-model.html" class="card block bg-gray-900 border border-gray-700 rounded-2xl p-6 group">
-                <div class="flex items-start justify-between gap-4">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="text-xs font-bold uppercase tracking-widest text-gray-600">WIP</span>
+                    <a href="001-agentic.html" class="card card-research">
+                        <div class="c-top">
+                            <div class="c-bar" aria-hidden="true"></div>
+                            <span class="c-tag c-tag-green">001 &middot; Analysis</span>
+                            <h2 class="c-title">The Assembly Space Is Real. But Early.</h2>
+                            <p class="c-desc">Where vendors are struggling, who's attacking from which direction, the unresolved question of orchestration ownership, and five criteria separating winners from demos.</p>
                         </div>
-                        <h2 class="text-xl font-black uppercase tracking-tight text-white mb-1">Content Model</h2>
-                        <p class="text-sm text-gray-400">Structured content type schema explorer and property group visualizer.</p>
-                    </div>
-                    <svg class="card-arrow w-5 h-5 text-opti-green mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
+                        <div class="c-foot">
+                            <span class="c-type">Field Analysis</span>
+                            <svg class="c-arrow" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                    </a>
+
                 </div>
-            </a>
+            </section>
+
+            <!-- Prototypes -->
+            <section aria-labelledby="sec-proto">
+                <div class="section-hd">
+                    <span class="section-label" id="sec-proto">Interactive Prototypes</span>
+                    <span class="section-ct">3 tools</span>
+                </div>
+                <div class="grid-proto">
+
+                    <a href="Opti-Agentic_CMS_Layout_Engine.html" class="card card-proto card-featured">
+                        <div class="c-top">
+                            <div class="c-status">
+                                <div class="c-status-dot c-status-dot-live" aria-hidden="true"></div>
+                                <span class="c-status-label c-status-label-live">Latest &middot; v2</span>
+                            </div>
+                            <span class="c-tag c-tag-teal">Interactive</span>
+                            <h2 class="c-title">Agentic Layout Engine</h2>
+                            <p class="c-desc">Intent-driven layout selection — map user goals to layout blueprints. The agent selects, annotates, and assembles content slots in real time. Includes a reasoning drawer explaining each layout decision.</p>
+                        </div>
+                        <div class="c-foot">
+                            <span class="c-type">Prototype &middot; Blueprint + Components</span>
+                            <svg class="c-arrow" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                    </a>
+
+                    <a href="Agentic_CMS_Layout_Engine.html" class="card card-proto">
+                        <div class="c-top">
+                            <div class="c-status">
+                                <div class="c-status-dot c-status-dot-muted" aria-hidden="true"></div>
+                                <span class="c-status-label c-status-label-muted">v1</span>
+                            </div>
+                            <span class="c-tag c-tag-muted">Interactive</span>
+                            <h2 class="c-title">Layout Engine</h2>
+                            <p class="c-desc">Original wireframe-based layout previewer with slot annotation and AI reasoning drawer.</p>
+                        </div>
+                        <div class="c-foot">
+                            <span class="c-type">Prototype &middot; v1</span>
+                            <svg class="c-arrow" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                    </a>
+
+                    <a href="content-model.html" class="card card-proto">
+                        <div class="c-top">
+                            <div class="c-status">
+                                <div class="c-status-dot c-status-dot-muted" aria-hidden="true"></div>
+                                <span class="c-status-label c-status-label-muted">In Progress</span>
+                            </div>
+                            <span class="c-tag c-tag-muted">WIP</span>
+                            <h2 class="c-title">Content Model</h2>
+                            <p class="c-desc">Structured content type schema explorer and property group visualizer.</p>
+                        </div>
+                        <div class="c-foot">
+                            <span class="c-type">Prototype</span>
+                            <svg class="c-arrow" width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </div>
+                    </a>
+
+                </div>
+            </section>
 
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="border-t border-gray-800 px-8 py-5 text-center">
-        <span class="text-xs text-gray-700 uppercase tracking-widest font-bold">Optimizely &mdash; Agentic CMS Research</span>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <footer>
+        <span class="footer-txt">Optimizely &mdash; Agentic CMS Research &mdash; 2026</span>
     </footer>
 
 </body>

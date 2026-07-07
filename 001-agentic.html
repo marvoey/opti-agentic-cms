@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Assembly Space Is Real — Agentic CMS Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        opti: {
+                            green: '#ABFF44',
+                            dark: '#08251A',
+                            blue: '#007879',
+                            light: '#91D8DA'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #1a3a28; border-radius: 3px; }
+
+        .friction-card { transition: border-color 0.2s ease, background 0.2s ease; }
+        .friction-card:hover { border-color: rgba(171,255,68,0.25); background: rgba(171,255,68,0.03); }
+
+        .vendor-card { transition: border-color 0.2s ease; }
+        .vendor-card:hover { border-color: rgba(0,120,121,0.6); }
+
+        .criteria-card { transition: transform 0.2s ease, border-color 0.2s ease; }
+        .criteria-card:hover { transform: translateX(4px); border-color: rgba(171,255,68,0.4); }
+
+        .tag {
+            background: rgba(171, 255, 68, 0.08);
+            border: 1px solid rgba(171, 255, 68, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-opti-dark text-gray-300 font-sans antialiased">
+
+    <!-- Top nav -->
+    <nav class="sticky top-0 z-50 bg-opti-dark/95 backdrop-blur-sm border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-500 hover:text-opti-green transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Home
+        </a>
+        <span class="text-xs text-gray-700 uppercase tracking-widest font-bold">Analysis · 001</span>
+    </nav>
+
+    <!-- Hero -->
+    <header class="border-b border-gray-800 px-6 md:px-16 py-16 md:py-24">
+        <div class="max-w-4xl">
+            <div class="tag inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wider text-opti-green mb-6">Field Analysis</div>
+            <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tight leading-none text-white mb-8">
+                The Assembly<br>Space Is Real.<br><span class="text-opti-green">But Early.</span>
+            </h1>
+            <p class="text-gray-400 text-lg max-w-2xl leading-relaxed">
+                The assembly space is real as an architectural direction — but vendors are still struggling with the hard parts. Here's how to think about it clearly.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-3xl px-6 md:px-16 py-14 mx-auto">
+
+        <!-- Thesis -->
+        <section class="mb-16">
+            <p class="leading-relaxed mb-4">The idea is not just "generate a new email with AI." It is: take approved assets, templates, content fragments, brand rules, customer data, past performance signals, and channel constraints — then let an agent assemble usable campaign or experience outputs. That is different from generic AI copywriting.</p>
+            <p class="leading-relaxed mb-4">Hightouch's Content Assembly is a good example because it explicitly talks about assembling content from existing approved assets — including DAMs, Figma, Adobe, Google Drive, templates, images, and style guides.</p>
+            <p class="leading-relaxed">But assembly is not yet mature in the way vendors imply. Most are still strongest at narrow tasks: email variations, ads, campaign briefs, landing-page drafts, content repurposing, metadata generation, SEO/GEO recommendations, and workflow handoffs. They are not yet reliably assembling full, governed, high-fidelity digital experiences across every channel without humans reviewing and correcting the output.</p>
+
+            <div class="my-10 border border-gray-700 rounded-2xl p-6 md:p-8 bg-gray-900/40">
+                <p class="text-xl md:text-2xl font-bold text-white leading-snug">The real market today is <span class="text-opti-green">"human-in-the-loop AI content assembly,"</span> not fully autonomous agentic CMS.</p>
+            </div>
+        </section>
+
+        <!-- Where vendors are struggling -->
+        <section class="mb-16">
+            <h2 class="text-sm font-black uppercase tracking-widest text-opti-green mb-8">Where Vendors Are Struggling</h2>
+
+            <div class="space-y-4">
+                <div class="friction-card border border-gray-800 rounded-2xl p-6 bg-gray-900/30">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl font-black text-gray-800 leading-none flex-shrink-0">1</span>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-2">Content models are usually not ready.</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Agentic assembly only works if the underlying content is structured, tagged, reusable, and governed. Optimizely itself makes this point bluntly: when agentic CMS workflows fail, it often looks like an AI failure — but the real issue is usually the content model.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="friction-card border border-gray-800 rounded-2xl p-6 bg-gray-900/30">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl font-black text-gray-800 leading-none flex-shrink-0">2</span>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-2">Brand and legal governance are still hard.</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Vendors can say "on brand," but proving that every assembled output respects regulatory, accessibility, brand, legal, localization, and channel-specific rules is much harder. This is exactly why validation, approvals, audit trails, and governed repositories matter so much.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="friction-card border border-gray-800 rounded-2xl p-6 bg-gray-900/30">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl font-black text-gray-800 leading-none flex-shrink-0">3</span>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-2">The orchestration layer is immature.</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">It is one thing for an agent to generate ten email variants. It is another thing for it to understand campaign goals, audience segments, content permissions, design constraints, test strategy, compliance rules, analytics feedback, and publishing workflows end to end. Agentic workflow orchestration remains a hard unsolved problem, especially with long-running tasks and governance requirements.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="friction-card border border-gray-800 rounded-2xl p-6 bg-gray-900/30">
+                    <div class="flex items-start gap-4">
+                        <span class="text-3xl font-black text-gray-800 leading-none flex-shrink-0">4</span>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-2">Enterprise adoption is more organizational than technical.</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">Even when the technology works, companies struggle because ownership, governance, incentives, and operating models are unclear. AI pilots often fail to scale because the business has not redesigned how work should actually happen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vendor landscape -->
+        <section class="mb-16">
+            <h2 class="text-sm font-black uppercase tracking-widest text-opti-green mb-3">Who's Attacking from Where</h2>
+            <p class="text-sm text-gray-500 mb-8">The strongest vendors are currently assembling controlled marketing assets, not fully autonomous experiences. Each is attacking from a different angle:</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="vendor-card border border-gray-800 rounded-xl p-5 bg-gray-900/30 transition-colors">
+                    <div class="text-xs font-bold uppercase tracking-widest text-opti-light mb-2">Hightouch</div>
+                    <div class="text-sm text-white font-semibold mb-1">Data + Campaign + Asset</div>
+                    <div class="text-xs text-gray-500 leading-relaxed">Assembling from approved assets including DAMs, Figma, Adobe, Google Drive, templates, and style guides.</div>
+                </div>
+                <div class="vendor-card border border-gray-800 rounded-xl p-5 bg-gray-900/30 transition-colors">
+                    <div class="text-xs font-bold uppercase tracking-widest text-opti-green mb-2">Optimizely</div>
+                    <div class="text-sm text-white font-semibold mb-1">CMS + Experimentation + Workflow</div>
+                    <div class="text-xs text-gray-500 leading-relaxed">Attempting to make AI part of the governed workflow and content-discovery layer, not a detached copy assistant.</div>
+                </div>
+                <div class="vendor-card border border-gray-800 rounded-xl p-5 bg-gray-900/30 transition-colors">
+                    <div class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Adobe</div>
+                    <div class="text-sm text-white font-semibold mb-1">Creative + DAM + Journey + Enterprise</div>
+                    <div class="text-xs text-gray-500 leading-relaxed">Owns a large share of the creative, asset management, journey orchestration, and enterprise marketing infrastructure.</div>
+                </div>
+                <div class="vendor-card border border-gray-800 rounded-xl p-5 bg-gray-900/30 transition-colors">
+                    <div class="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Contentful / Headless CMS</div>
+                    <div class="text-sm text-white font-semibold mb-1">Structured Content Layer</div>
+                    <div class="text-xs text-gray-500 leading-relaxed">Own the structured content layer that agents need to compose from — APIs, metadata models, content types.</div>
+                </div>
+            </div>
+
+            <div class="mt-8 border-l-4 border-opti-blue pl-5 py-1">
+                <p class="text-base font-bold text-white">The unresolved question: <span class="text-opti-light">who owns the orchestration layer?</span></p>
+                <p class="text-sm text-gray-500 mt-1">That is the real battle.</p>
+            </div>
+        </section>
+
+        <!-- The 5 criteria -->
+        <section class="mb-16">
+            <h2 class="text-sm font-black uppercase tracking-widest text-opti-green mb-3">What Winning Looks Like</h2>
+            <p class="text-sm text-gray-500 mb-8">The winners will not be the vendors with the flashiest "AI agent" demo. The winners will be the platforms that can prove five things:</p>
+
+            <div class="space-y-3">
+                <div class="criteria-card border border-gray-800 rounded-xl p-5 flex gap-5 items-start bg-gray-900/20">
+                    <span class="text-opti-green font-black text-2xl leading-none flex-shrink-0 w-8">1</span>
+                    <div>
+                        <div class="font-bold text-white text-sm mb-1">Assemble from approved reusable assets</div>
+                        <div class="text-xs text-gray-500">No hallucinated content. Governed sources only.</div>
+                    </div>
+                </div>
+                <div class="criteria-card border border-gray-800 rounded-xl p-5 flex gap-5 items-start bg-gray-900/20">
+                    <span class="text-opti-green font-black text-2xl leading-none flex-shrink-0 w-8">2</span>
+                    <div>
+                        <div class="font-bold text-white text-sm mb-1">Respect brand, legal, accessibility, localization, and workflow rules</div>
+                        <div class="text-xs text-gray-500">Every assembled output — not just the demo ones.</div>
+                    </div>
+                </div>
+                <div class="criteria-card border border-gray-800 rounded-xl p-5 flex gap-5 items-start bg-gray-900/20">
+                    <span class="text-opti-green font-black text-2xl leading-none flex-shrink-0 w-8">3</span>
+                    <div>
+                        <div class="font-bold text-white text-sm mb-1">Connect to customer and behavioral data without becoming a governance nightmare</div>
+                        <div class="text-xs text-gray-500">Intent-aware assembly that doesn't create compliance exposure.</div>
+                    </div>
+                </div>
+                <div class="criteria-card border border-gray-800 rounded-xl p-5 flex gap-5 items-start bg-gray-900/20">
+                    <span class="text-opti-green font-black text-2xl leading-none flex-shrink-0 w-8">4</span>
+                    <div>
+                        <div class="font-bold text-white text-sm mb-1">Publish into real channels with human approval and auditability</div>
+                        <div class="text-xs text-gray-500">Human-in-the-loop where it matters. Full audit trail where it's required.</div>
+                    </div>
+                </div>
+                <div class="criteria-card border border-gray-800 rounded-xl p-5 flex gap-5 items-start bg-gray-900/20">
+                    <span class="text-opti-green font-black text-2xl leading-none flex-shrink-0 w-8">5</span>
+                    <div>
+                        <div class="font-bold text-white text-sm mb-1">Measure whether assembly actually reduces cycle time, handoffs, and campaign bottlenecks</div>
+                        <div class="text-xs text-gray-500">Demonstrated ROI, not just productivity theater.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Closing -->
+        <section class="mb-16">
+            <div class="border border-gray-700 rounded-2xl p-6 md:p-8 bg-gray-900/30">
+                <p class="text-sm font-bold uppercase tracking-widest text-gray-600 mb-4">Bottom Line</p>
+                <p class="text-lg text-white leading-relaxed font-medium mb-4">The assembly space is real — but the strongest vendors are currently assembling <span class="text-opti-green">controlled marketing assets</span>, not fully autonomous experiences.</p>
+                <p class="text-sm text-gray-400 leading-relaxed">Right now it is a promising category sitting between CMS, DAM, CDP, campaign orchestration, experimentation, workflow automation, and AI agents. That is why it feels exciting and messy at the same time.</p>
+            </div>
+        </section>
+
+        <!-- Sources -->
+        <section class="mb-8">
+            <h2 class="text-xs font-bold uppercase tracking-widest text-gray-700 mb-4">Referenced Sources</h2>
+            <ul class="space-y-2">
+                <li class="text-xs text-gray-600">
+                    <a href="https://hightouch.com/blog/content-assembly" class="hover:text-opti-light transition-colors underline underline-offset-2">Hightouch — Introducing Content Assembly: Remix your existing assets</a>
+                </li>
+                <li class="text-xs text-gray-600">
+                    <a href="https://www.optimizely.com/field-notes/articles/five-ways-cms-workflows-fail" class="hover:text-opti-light transition-colors underline underline-offset-2">Optimizely — 5 ways agentic CMS workflows fail (and why it isn't the AI)</a>
+                </li>
+                <li class="text-xs text-gray-600">
+                    <a href="https://arxiv.org/abs/2509.07595" class="hover:text-opti-light transition-colors underline underline-offset-2">arXiv — AgentX: Towards Orchestrating Robust Agentic Workflow Patterns</a>
+                </li>
+                <li class="text-xs text-gray-600">
+                    <a href="https://www.techradar.com/pro/ai-adoption-problems-are-usually-organizational-problems-in-disguise" class="hover:text-opti-light transition-colors underline underline-offset-2">TechRadar — AI adoption problems are usually organizational problems in disguise</a>
+                </li>
+            </ul>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 px-8 py-5 text-center">
+        <span class="text-xs text-gray-700 uppercase tracking-widest font-bold">Optimizely — Agentic CMS Research</span>
+    </footer>
+
+</body>
+</html>
